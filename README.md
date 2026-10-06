@@ -8,6 +8,11 @@ Aplicativo para el control de inventarios de una mypime del Huila, desarrollado 
 - Carlos Andrés Portela Quesada
 - Kevin Mauricio Hernandez Valenzuela
 - Juan Sebastian Tobon Alvarez
+- Juan José Roso Casanova
+- Juan Jose Rodriguez Gomez
+- Rafel Salazar Rodriguez
+- Fredy Alejandro Olaya Alvarez
+- Juan Sebastian Pérez Poveda
 
 ## Información académica
 
