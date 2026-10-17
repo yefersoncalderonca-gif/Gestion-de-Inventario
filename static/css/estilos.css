@@ -1,0 +1,23 @@
+/* Estilos generales del sistema (esqueleto). */
+/* TODO: definir paleta de colores, tipografía y diseño según el prototipo de Figma. */
+
+body {
+    margin: 0;
+    font-family: sans-serif;
+}
+
+.menu-lateral {
+    /* TODO: menú lateral */
+}
+
+.contenido {
+    /* TODO: área principal */
+}
+
+.barra-superior {
+    /* TODO: barra superior con fecha, usuario y cerrar sesión */
+}
+
+.login {
+    /* TODO: pantalla de inicio de sesión */
+}

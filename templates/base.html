@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titulo %}Sistema de Gestión de Inventario{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+</head>
+<body>
+    <!-- Menú lateral: Panel, Productos, Stock actual, Proveedores, Movimientos, Reportes, Usuarios -->
+    <nav class="menu-lateral">
+        <h1>MagnusSIS</h1>
+        <ul>
+            <li><a href="#">Panel</a></li>
+            <li><a href="#">Productos</a></li>
+            <li><a href="#">Stock actual</a></li>
+            <li><a href="#">Proveedores</a></li>
+            <li><a href="#">Movimientos</a></li>
+            <li><a href="#">Reportes</a></li>
+            <li><a href="#">Usuarios</a></li>
+        </ul>
+    </nav>
+
+    <main class="contenido">
+        <header class="barra-superior">
+            <!-- Fecha, usuario y botón Cerrar sesión -->
+            <button type="button">Cerrar sesión</button>
+        </header>
+        {% block contenido %}{% endblock %}
+    </main>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
