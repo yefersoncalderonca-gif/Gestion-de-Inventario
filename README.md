@@ -11,9 +11,9 @@ Aplicativo para el control de inventarios de una mypime del Huila, desarrollado 
 - Juan José Roso Casanova
 - Juan Jose Rodriguez Gomez
 - Rafel Salazar Rodriguez
-- Fredy Alejandro Olaya Alvarez
 - Juan Sebastian Pérez Poveda
-- Juan David Narváez Moquera
+- Jhon Sebastian Scarpeta Diaz
+
 
 ## Información académica
 
