@@ -7,8 +7,8 @@ Qué hace el programa:
   - Permite agregar un producto, ver todo el inventario y buscar un producto por nombre.
   - Muestra un menú que se repite hasta que el usuario elige "Salir".
 
-Nota: es un MVP. No guarda datos en archivos ni en una base de datos,
-y no valida estrictamente lo que escribe el usuario.
+Nota: es un MVP. No guarda datos en archivos ni en una base de datos.
+Solo valida que la cantidad y el precio sean números.
 """
 
 
@@ -20,8 +20,22 @@ def agregar_producto(inventario):
     """Pide los datos de un producto y lo agrega al inventario (lista en memoria)."""
     print("\n--- AGREGAR PRODUCTO ---")
     nombre = input("Nombre del producto: ")
-    cantidad = int(input("Cantidad en stock: "))
-    precio = float(input("Precio unitario: "))
+
+    # Ciclo while: repite la pregunta hasta que el usuario escriba un número entero
+    cantidad = None
+    while cantidad is None:
+        try:
+            cantidad = int(input("Cantidad en stock: "))
+        except ValueError:
+            print("Error: escriba solo números enteros (ejemplo: 10).")
+
+    # Lo mismo para el precio, que puede tener decimales
+    precio = None
+    while precio is None:
+        try:
+            precio = float(input("Precio unitario: "))
+        except ValueError:
+            print("Error: escriba solo números (ejemplo: 25000).")
 
     # Cada producto es un diccionario con tres propiedades
     producto = {
