@@ -41,4 +41,41 @@ Aplicativo para el control de inventarios de una mypime del Huila, desarrollado 
 
 ## Estado del proyecto
 
-En desarrollo (fase de planeación).
+En desarrollo (Entrega 3: versión de consola con persistencia).
+
+## Versión de consola (Entregas 2 y 3)
+
+Programa en Python que gestiona el inventario por la terminal, sin Django ni MySQL. Está en el archivo `inventario.py`.
+
+### Cómo ejecutarlo
+
+1. Tener Python 3 instalado.
+2. Abrir una terminal en la carpeta del proyecto.
+3. Ejecutar:
+   `python inventario.py`
+
+### Funciones
+
+1. Agregar producto (nombre, cantidad, precio y fecha de vencimiento opcional)
+2. Ver inventario
+3. Buscar producto por nombre
+4. Actualizar la cantidad de un producto
+5. Eliminar producto (con confirmación)
+6. Salir
+
+### Persistencia de datos
+
+- Los productos se guardan en el archivo `inventario.json`, en la misma carpeta del programa.
+- Al iniciar, el programa busca el archivo. Si existe, carga los productos; si no existe, lo crea vacío sin mostrar errores.
+- Cada vez que se agrega, actualiza o elimina un producto, el archivo se guarda automáticamente.
+- Si el archivo está vacío o dañado, el programa avisa, guarda una copia como `inventario.json.corrupto` y arranca con un inventario vacío.
+- El archivo `inventario.json` no se sube al repositorio (está en el `.gitignore`).
+
+### Validaciones y manejo de errores
+
+- La cantidad debe ser un número entero entre 0 y 1.000.000. No acepta letras, símbolos ni negativos.
+- El precio debe ser un número mayor que cero.
+- El nombre no puede estar vacío ni repetirse.
+- La fecha de vencimiento es opcional y debe tener el formato dd/mm/aaaa con una fecha real.
+- Ante un dato inválido, el programa muestra un mensaje de error y vuelve a pedir el dato, sin cerrarse.
+- Si se interrumpe la entrada (Ctrl + C), el programa guarda los datos y se cierra sin errores técnicos.

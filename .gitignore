@@ -3,3 +3,8 @@ __pycache__/
 db.sqlite3
 .env
 venv/
+
+# Archivos de datos generados por el programa
+inventario.json
+inventario.json.tmp
+inventario.json.corrupto
