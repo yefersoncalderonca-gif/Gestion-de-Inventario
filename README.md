@@ -10,7 +10,7 @@ Aplicativo para el control de inventarios de una mypime del Huila, desarrollado 
 - Juan Sebastian Tobon Alvarez
 - Juan José Roso Casanova
 - Juan Jose Rodriguez Gomez
-- Rafal Salazar Rodriguez
+- Rafael Salazar Rodriguez
 - Juan Sebastian Pérez Poveda
 - Jhon Sebastian Scarpeta Diaz
 - Fredy Alejandro Olaya Alvarez
