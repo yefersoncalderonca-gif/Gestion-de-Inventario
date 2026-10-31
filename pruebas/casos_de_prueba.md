@@ -13,6 +13,7 @@ Cada integrante hace SUS casos, anota el resultado en `pruebas/CP-XX.md` (qué e
 | Juan Sebastián Tobon Álvarez | CP-07, CP-16 |
 | Rafael Salazar Rodríguez | CP-08 |
 | Carlos Andrés Portela Quesada | CP-09, CP-10 |
+| Fredy Alejandro Olaya Alvarez | CP-01 |
 
 ## Casos
 
