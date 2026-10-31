@@ -13,6 +13,7 @@ Aplicativo para el control de inventarios de una mypime del Huila, desarrollado 
 - Rafel Salazar Rodriguez
 - Juan Sebastian Pérez Poveda
 - Jhon Sebastian Scarpeta Diaz
+- Fredy Alejandro Olaya Alvarez
 
 
 ## Información académica
