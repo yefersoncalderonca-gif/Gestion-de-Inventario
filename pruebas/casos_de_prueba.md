@@ -7,13 +7,12 @@ Cada integrante hace SUS casos, anota el resultado en `pruebas/CP-XX.md` (qué e
 |---|---|
 | Kevin Mauricio Hernández Valenzuela | CP-02, CP-11 |
 | Jhon Sebastian Scarpeta Diaz | CP-03, CP-12 |
-| Juan Sebastián Pérez Poveda | CP-04, CP-13 |
 | Juan José Rodríguez Gómez | CP-05, CP-14 |
-| Juan José Roso Casanova | CP-06, CP-15 |
-| Juan Sebastián Tobon Álvarez | CP-07, CP-16 |
-| Rafael Salazar Rodríguez | CP-08 |
 | Carlos Andrés Portela Quesada | CP-09, CP-10 |
 | Fredy Alejandro Olaya Alvarez | CP-01 |
+| Yeferson Calderón Camacho (líder) | CP-04, CP-06, CP-07, CP-08, CP-13, CP-15, CP-16 |
+
+Los casos CP-04, CP-06, CP-07, CP-08, CP-13, CP-15 y CP-16 estaban asignados a Juan Sebastián Pérez Poveda, Juan José Roso Casanova, Juan Sebastián Tobon Álvarez y Rafael Salazar Rodríguez. No los entregaron a tiempo y los ejecutó el líder.
 
 ## Casos
 
