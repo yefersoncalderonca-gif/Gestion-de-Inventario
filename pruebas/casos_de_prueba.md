@@ -13,7 +13,7 @@ Cada integrante hace SUS casos, anota el resultado en `pruebas/CP-XX.md` (qué e
 | Juan José Roso Casanova | Diseño de los prototipos Figma 2.0 (colaboró con Fredy) |
 | Yeferson Calderón Camacho (líder) | CP-01, CP-04, CP-05, CP-06, CP-07, CP-08, CP-13, CP-15, CP-16 |
 
-Los casos CP-04, CP-06, CP-07, CP-08, CP-13, CP-15 y CP-16 estaban asignados a Juan Sebastián Pérez Poveda, Juan José Roso Casanova, Juan Sebastián Tobon Álvarez y Rafael Salazar Rodríguez. No los entregaron a tiempo y los ejecutó el líder.
+Los casos CP-01, CP-04, CP-05, CP-06, CP-07, CP-08, CP-13, CP-15 y CP-16 los ejecutó el líder del equipo.
 
 CP-05 lo subió primero Juan José Rodríguez Gómez, pero la captura no correspondía al caso. El líder lo volvió a ejecutar y reemplazó la captura y el resultado.
 
