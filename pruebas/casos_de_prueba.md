@@ -9,8 +9,9 @@ Cada integrante hace SUS casos, anota el resultado en `pruebas/CP-XX.md` (qué e
 | Jhon Sebastian Scarpeta Diaz | CP-03, CP-12 |
 | Juan José Rodríguez Gómez | CP-14 |
 | Carlos Andrés Portela Quesada | CP-09, CP-10 |
-| Fredy Alejandro Olaya Alvarez | CP-01 (pendiente) |
-| Yeferson Calderón Camacho (líder) | CP-04, CP-05, CP-06, CP-07, CP-08, CP-13, CP-15, CP-16 |
+| Fredy Alejandro Olaya Alvarez | Prototipos Figma 2.0 (subió los archivos a la rama diseno) |
+| Juan José Roso Casanova | Diseño de los prototipos Figma 2.0 (colaboró con Fredy) |
+| Yeferson Calderón Camacho (líder) | CP-01, CP-04, CP-05, CP-06, CP-07, CP-08, CP-13, CP-15, CP-16 |
 
 Los casos CP-04, CP-06, CP-07, CP-08, CP-13, CP-15 y CP-16 estaban asignados a Juan Sebastián Pérez Poveda, Juan José Roso Casanova, Juan Sebastián Tobon Álvarez y Rafael Salazar Rodríguez. No los entregaron a tiempo y los ejecutó el líder.
 
