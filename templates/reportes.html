@@ -1,6 +1,145 @@
-{% extends "base.html" %}
-{% block titulo %}Reportes - Sistema de Gestión de Inventario{% endblock %}
-{% block contenido %}
-<h2>Reportes</h2>
-<!-- TODO: filtros por fecha y tipo, tabla y exportación a PDF o Excel -->
+{% extends 'base.html' %}
+{% load inv %}
+{% block title %}
+  Reportes · MagnusSIG
 {% endblock %}
+{% block foot %}
+  MagnusSIG SAS · Sistema de gestión de inventario
+{% endblock %}
+{% block content %}
+  <div class="head">
+  <div>
+  <h1>
+  Reportes
+  </h1>
+  <p class="muted">
+  Consulta los movimientos y exporta la información de tu inventario.
+  </p>
+  </div>
+  <div class="head-btns">
+  <a class="btn btn-out" href="?{{ qs }}&export=pdf">
+  {% icon 'file' 15 %} Exportar PDF
+  </a>
+  <a class="btn btn-primary" href="?{{ qs }}&export=xlsx">
+  {% icon 'download' 15 %} Exportar Excel
+  </a>
+  </div>
+  </div>
+  <form method="get" class="card pad repfilter">
+  <div class="fld">
+  <label>
+  Tipo de reporte
+  </label>
+  <select name="tipo" class="input">
+  {% for v,l in tipos %}
+    <option value="{{ v }}"
+    {% if v == tipo %}
+      selected
+    {% endif %}
+    >
+    {{ l }}
+    </option>
+  {% endfor %}
+  </select>
+  </div>
+  <div class="fld">
+  <label>
+  Desde
+  </label>
+  <input class="input" type="date" name="desde" value="{{ desde|date:'Y-m-d' }}">
+  </div>
+  <div class="fld">
+  <label>
+  Hasta
+  </label>
+  <input class="input" type="date" name="hasta" value="{{ hasta|date:'Y-m-d' }}">
+  </div>
+  <button class="btn btn-primary" type="submit">
+  {% icon 'filter' 15 %} Generar
+  </button>
+  </form>
+  <div class="card pad cards3">
+  {% for ic,l,v,u in tarjetas %}
+    <div class="mini-stat">
+    <span class="chip blue">
+    {% icon ic 16 %}
+    </span>
+    <div>
+    <small>
+    {{ l }}
+    </small>
+    <div>
+    <b class="num2">
+    {{ v }}
+    </b>
+    <small>
+    {{ u }}
+    </small>
+    </div>
+    </div>
+    </div>
+  {% endfor %}
+  </div>
+  <div class="between mt">
+  <div>
+  <h3>
+  {{ titulo }}
+  </h3>
+  <small class="muted">
+  Periodo: {{ desde|date:"d/m/Y" }} – {{ hasta|date:"d/m/Y" }}
+  </small>
+  </div>
+  <small class="muted">
+  {{ n }} registros
+  </small>
+  </div>
+  <div class="card table">
+  <table>
+  <thead>
+  <tr>
+  {% for c in cab %}
+    <th>
+    {{ c }}
+    </th>
+  {% endfor %}
+  </tr>
+  </thead>
+  <tbody>
+  {% for fila in page %}
+    <tr>
+    {% for v in fila %}
+      <td>
+      {% if v == 'Por vencer' or v == 'Urgente' or v == 'Vencido' or v == 'Bajo mínimo' or v == 'Vigente' or v == 'Sin vencimiento' %}
+        <span class="state {{ v|slugify }}">
+        {{ v }}
+        </span>
+        {% else %}
+          {{ v|default_if_none:"—" }}
+        {% endif %}
+        </td>
+      {% endfor %}
+      </tr>
+      {% empty %}
+        <tr>
+        <td colspan="{{ cab|length }}" class="empty">
+        No hay datos para este periodo.
+        </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+      </table>
+      {% include 'partials/_paginacion.html' with etiqueta='registros' extra='' %}
+      </div>
+      <div class="card pad note">
+      <b>
+      Nota breve
+      </b>
+      <p class="muted">
+      Catálogo global: {{ n_prods }} productos. Bajo mínimo: {{ n_bajo }} producto{{ n_bajo|pluralize }}
+      {% if bajo_txt %}
+        ({{ bajo_txt }})
+      {% endif %}
+      . No confundir estas alertas con las {{ n_fecha }} por fecha. Informe apoyo SG-SST; no implica certificación ni afirmación de cumplimiento legal.
+      </p>
+      </div>
+    {% endblock %}

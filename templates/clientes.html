@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load inv %}
+{% block title %}
+  Clientes · MagnusSIG
+{% endblock %}
+{% block foot %}
+  MagnusSIG SAS · Sistema de gestión de insumos de emergencia
+{% endblock %}
+{% block content %}
+  <div class="head">
+  <div>
+  <h1>
+  Clientes
+  <span class="badge">
+  Nuevo 2.0
+  </span>
+  </h1>
+  <p class="muted">
+  Registra, consulta y administra clientes, compras y salidas del inventario de SG-SST e insumos de emergencia.
+  </p>
+  </div>
+  {% if not operador %}
+    <a class="btn btn-primary" href="{% url 'cliente_nuevo' %}">
+    {% icon 'user-plus' 15 %} Nuevo cliente
+    </a>
+  {% endif %}
+  </div>
+  <form class="filters" method="get" data-autosubmit>
+  <div class="search">
+  {% icon 'search' 15 %}
+  <input name="q" value="{{ q }}" placeholder="Buscar por nombre o NIT...">
+  </div>
+  <div class="selw">
+  <select name="f" class="input">
+  <option value="">
+  Todos los clientes
+  </option>
+  <option value="con"
+  {% if f == 'con' %}
+    selected
+  {% endif %}
+  >
+  Con compras
+  </option>
+  <option value="sin"
+  {% if f == 'sin' %}
+    selected
+  {% endif %}
+  >
+  Sin compras
+  </option>
+  </select>
+  </div>
+  <span class="muted right">
+  {{ total }} clientes registrados
+  </span>
+  </form>
+  <div class="card table">
+  <table>
+  <thead>
+  <tr>
+  <th>
+  Nombre
+  </th>
+  <th>
+  NIT
+  </th>
+  <th>
+  Teléfono
+  </th>
+  <th>
+  Correo
+  </th>
+  <th>
+  Salidas
+  </th>
+  <th>
+  Última compra
+  </th>
+  {% if not operador %}
+    <th>
+    Acciones
+    </th>
+  {% endif %}
+  </tr>
+  </thead>
+  <tbody>
+  {% for r in page %}
+    <tr>
+    <td>
+    <span class="sig">
+    {{ r.c.siglas }}
+    </span>
+    <b>
+    {{ r.c.nombre }}
+    </b>
+    <small class="sub ml">
+    {{ r.c.detalle }}
+    </small>
+    </td>
+    <td>
+    {{ r.c.nit }}
+    </td>
+    <td>
+    {{ r.c.telefono }}
+    </td>
+    <td>
+    {{ r.c.correo }}
+    </td>
+    <td>
+    <span class="tag">
+    {{ r.salidas }} salida{{ r.salidas|pluralize }}
+    </span>
+    </td>
+    <td>
+    {% if r.ultima %}
+      {{ r.ultima|date:"d/m/Y" }}
+      {% else %}
+        —
+      {% endif %}
+      </td>
+      {% if not operador %}
+        <td class="acts">
+        <a class="blue" href="{% url 'cliente_editar' r.c.pk %}">
+        {% icon 'edit' 13 %} Editar
+        </a>
+        </td>
+      {% endif %}
+      </tr>
+      {% empty %}
+        <tr>
+        <td colspan="7" class="empty">
+        No se encontraron clientes.
+        </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+      </table>
+      {% include 'partials/_paginacion.html' with etiqueta='clientes' extra='' %}
+      </div>
+      <div class="card pad note">
+      <b>
+      Nota
+      </b>
+      <p class="muted">
+      Datos de ejemplo · Sin información real.
+      </p>
+      </div>
+    {% endblock %}
