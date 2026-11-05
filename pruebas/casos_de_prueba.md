@@ -9,8 +9,11 @@ Cada integrante hace SUS casos, anota el resultado en `pruebas/CP-XX.md` (qué e
 | Jhon Sebastian Scarpeta Diaz | CP-03, CP-12 |
 | Juan José Rodríguez Gómez | CP-14 |
 | Carlos Andrés Portela Quesada | CP-09, CP-10 |
-| Fredy Alejandro Olaya Alvarez | Prototipos Figma 2.0 (subió los archivos a la rama diseno) |
-| Juan José Roso Casanova | Diseño de los prototipos Figma 2.0 (colaboró con Fredy) |
+| Fredy Alejandro Olaya Alvarez | Prototipos Figma 2.0 (subió los archivos a la rama diseno), CP-21 |
+| Juan José Roso Casanova | Diseño de los prototipos Figma 2.0 (colaboró con Fredy), CP-20 |
+| Juan Sebastian Pérez Poveda | CP-17 |
+| Juan Sebastian Tobon Alvarez | CP-18 |
+| Rafael Salazar Rodriguez | CP-19 |
 | Yeferson Calderón Camacho (líder) | CP-01, CP-04, CP-05, CP-06, CP-07, CP-08, CP-13, CP-15, CP-16 |
 
 Los casos CP-01, CP-04, CP-05, CP-06, CP-07, CP-08, CP-13, CP-15 y CP-16 los ejecutó el líder del equipo.
@@ -67,3 +70,18 @@ Esperado: `x` da error, `n` no borra, `s` elimina y el cambio se guarda.
 
 **CP-16 Interrupción.** Estando en el menú, presionar `Ctrl + C`.
 Esperado: dice "Entrada interrumpida. Guardando datos y saliendo..." sin mensajes técnicos (traceback).
+
+**CP-17 Buscar producto.** Tener el producto `Casco de seguridad`. Opción 3; escribir `casco DE seguridad`, luego `Martillo` y luego Enter vacío.
+Esperado: encuentra el casco sin distinguir mayúsculas; con `Martillo` avisa que no encontró ningún producto; con el campo vacío muestra "no puede estar vacío".
+
+**CP-18 Límites máximos.** Opción 1; nombre `Tornillo`; cantidad `1000001`, luego `1000000`; precio `100000001`, luego `100000000`; fecha vacía.
+Esperado: error "no puede ser mayor que 1000000" y "no puede ser mayor que 100000000"; acepta los valores máximos y guarda el producto.
+
+**CP-19 Inventario vacío.** Con el archivo `inventario.json` borrado, ejecutar el programa y entrar a las opciones 2, 3, 4 y 5.
+Esperado: cada opción avisa que el inventario está vacío, sin errores técnicos, y el menú sigue funcionando.
+
+**CP-20 Eliminar producto inexistente y cancelar.** Tener el producto `Guantes`. Opción 5; escribir `Martillo` (no existe) y luego `cancelar`. Después opción 2.
+Esperado: con `Martillo` dice "no existe un producto llamado 'Martillo'" y vuelve a pedir el nombre; con `cancelar` dice "Operación cancelada"; `Guantes` sigue en el inventario.
+
+**CP-21 Actualizar cantidad por encima del límite.** Tener el producto `Guantes` con cantidad 10. Opción 4; nombre `Guantes`; nueva cantidad `1000001`, luego `20`. Después opción 2.
+Esperado: error "no puede ser mayor que 1000000" y vuelve a pedir la cantidad; con `20` dice "Cantidad actualizada y guardada correctamente" y el inventario muestra 20.
