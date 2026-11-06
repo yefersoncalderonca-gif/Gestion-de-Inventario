@@ -18,7 +18,7 @@
   </div>
   </div>
   <div class="movgrid">
-  <form method="post" class="card pad" id="movform" data-tipo="{{ tipo_sel }}">
+  <form method="post" class="card pad" id="movform" data-tipo="{{ tipo_sel }}" data-terceros="{% url 'movimientos_terceros' %}">
   {% csrf_token %}
   <div class="between">
   <h3>

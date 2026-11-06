@@ -51,7 +51,7 @@
   </div>
   <small>
   {% for p in vencen %}
-    {{ p.nombre }} vence en {{ p.dias_restantes }} días
+    {{ p.nombre }} vence en {{ p.dias_vencimiento }} días
     {% empty %}
       Sin vencimientos próximos
     {% endfor %}
@@ -73,7 +73,7 @@
     </div>
     <small>
     {% for p in recargas %}
-      {{ p.nombre }} · Recarga en {{ p.dias_restantes }} días
+      {{ p.nombre }} · Recarga en {{ p.dias_recarga }} días
       {% empty %}
         Sin recargas próximas
       {% endfor %}
