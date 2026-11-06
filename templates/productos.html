@@ -1,6 +1,203 @@
-{% extends "base.html" %}
-{% block titulo %}Lista de productos - Sistema de Gestión de Inventario{% endblock %}
-{% block contenido %}
-<h2>Lista de productos</h2>
-<!-- TODO: buscador, filtro por categoría y tabla de productos -->
+{% extends 'base.html' %}
+{% load inv %}
+{% block title %}
+  Productos · MagnusSIG
 {% endblock %}
+{% block content %}
+  <div class="head">
+  <div>
+  <h1>
+  Productos
+  </h1>
+  <p class="muted">
+  Administra el catálogo y la información de tus productos.
+  </p>
+  </div>
+  {% if not operador %}
+    <a class="btn btn-primary" href="{% url 'producto_nuevo' %}">
+    {% icon 'plus' 15 %} Nuevo producto
+    </a>
+  {% endif %}
+  </div>
+  <div class="grid3">
+  <div class="card stat">
+  <div class="stat-t">
+  Productos registrados
+  <span class="chip blue">
+  {% icon 'box' 16 %}
+  </span>
+  </div>
+  <div class="num">
+  {{ total }}
+  </div>
+  <small>
+  {{ n_cat }} categorías activas
+  </small>
+  </div>
+  <div class="card stat">
+  <div class="stat-t">
+  Unidades disponibles
+  <span class="chip blue">
+  {% icon 'layers' 16 %}
+  </span>
+  </div>
+  <div class="num">
+  {{ unidades }}
+  </div>
+  <small>
+  Inventario agregado
+  </small>
+  </div>
+  <div class="card stat">
+  <div class="stat-t">
+  Bajo mínimo
+  <span class="chip red">
+  {% icon 'alert' 16 %}
+  </span>
+  </div>
+  <div class="num
+  {% if bajo %}
+    red
+  {% endif %}
+  ">
+  {{ bajo|length }}
+  </div>
+  <small>
+  Requieren reposición
+  </small>
+  </div>
+  </div>
+  <form class="filters" method="get" data-autosubmit>
+  <div class="search">
+  {% icon 'search' 15 %}
+  <input name="q" value="{{ q }}" placeholder="Buscar por nombre o código...">
+  </div>
+  <div class="selw">
+  <select name="cat" class="input">
+  <option value="">
+  Todas las categorías
+  </option>
+  {% for v,l in categorias %}
+    <option value="{{ v }}"
+    {% if v == cat %}
+      selected
+    {% endif %}
+    >
+    {{ l }}
+    </option>
+  {% endfor %}
+  </select>
+  </div>
+  <span class="muted right">
+  {{ n_filtrados }} productos
+  </span>
+  </form>
+  <div class="card table">
+  <table>
+  <thead>
+  <tr>
+  <th>
+  Código
+  </th>
+  <th>
+  Producto
+  </th>
+  <th>
+  Categoría
+  </th>
+  <th class="c">
+  Unidad
+  </th>
+  <th class="c">
+  Cantidad
+  </th>
+  <th class="r">
+  Precio venta
+  </th>
+  <th>
+  Vence/recarga
+  </th>
+  {% if not operador %}
+    <th>
+    Acciones
+    </th>
+  {% endif %}
+  </tr>
+  </thead>
+  <tbody>
+  {% for p in page %}
+    <tr>
+    <td class="muted">
+    {{ p.codigo }}
+    </td>
+    <td>
+    <b>
+    {{ p.nombre }}
+    </b>
+    </td>
+    <td>
+    <span class="tag">
+    {{ p.categoria }}
+    </span>
+    </td>
+    <td class="c">
+    {{ p.unidad }}
+    </td>
+    <td class="c">
+    {{ p.cantidad }}
+    </td>
+    <td class="r">
+    {{ p.precio_venta|cop }}
+    </td>
+    <td class="muted">
+    {{ p.fecha_texto }}
+    </td>
+    {% if not operador %}
+      <td class="acts">
+      <a class="blue" href="{% url 'producto_editar' p.pk %}">
+      {% icon 'edit' 13 %} Editar
+      </a>
+      <form method="post" action="{% url 'producto_eliminar' p.pk %}" data-confirm="¿Eliminar «{{ p.nombre }}»? Esta acción no se puede deshacer.">
+      {% csrf_token %}
+      <button class="red">
+      {% icon 'trash' 13 %} Eliminar
+      </button>
+      </form>
+      </td>
+    {% endif %}
+    </tr>
+    {% empty %}
+      <tr>
+      <td colspan="8" class="empty">
+      No se encontraron productos.
+      </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    {% include 'partials/_paginacion.html' with etiqueta='productos' extra=' · Precios unitarios en COP' %}
+    </div>
+    {% if bajo %}
+      <div class="alertbox">
+      {% icon 'alert' 18 %}
+      <div>
+      <b>
+      {{ bajo|length }} producto{{ bajo|length|pluralize }} por debajo del stock mínimo
+      </b>
+      <p>
+      {% for p in bajo %}
+        {{ p.nombre }}
+        {% if not forloop.last %}
+          y
+        {% endif %}
+      {% endfor %}
+      necesita{{ bajo|length|pluralize:"n" }} reposición. Consulta
+      <a href="{% url 'stock' %}">
+      Stock y vencimientos
+      </a>
+      .
+      </p>
+      </div>
+      </div>
+    {% endif %}
+  {% endblock %}

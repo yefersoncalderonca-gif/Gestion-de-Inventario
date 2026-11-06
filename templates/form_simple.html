@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load inv %}
+{% block title %}
+  {{ titulo }} · MagnusSIG
+{% endblock %}
+{% block content %}
+  <div class="head">
+  <div>
+  <h1>
+  {{ titulo }}
+  </h1>
+  <p class="muted">
+  {{ sub }}
+  </p>
+  </div>
+  <a class="btn btn-out" href="{% url volver %}">
+  {% icon 'arrow-left' 15 %} Volver
+  </a>
+  </div>
+  <form method="post" class="card pad narrow">
+  {% csrf_token %}{{ form.non_field_errors }}
+  <div class="g2">
+  {% for f in form %}
+    <div class="fld">
+    <label for="{{ f.id_for_label }}">
+    {{ f.label }}
+    {% if f.field.required %}
+      *
+    {% endif %}
+    </label>
+    {{ f }}
+    {% for e in f.errors %}
+      <small class="err">
+      {{ e }}
+      </small>
+    {% endfor %}
+    </div>
+  {% endfor %}
+  </div>
+  <div class="fbtns">
+  <a class="btn btn-out" href="{% url volver %}">
+  Cancelar
+  </a>
+  <button class="btn btn-primary" type="submit">
+  {% icon 'check' 15 %} Guardar
+  </button>
+  </div>
+  </form>
+{% endblock %}

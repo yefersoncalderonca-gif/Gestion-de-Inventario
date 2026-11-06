@@ -1,20 +1,55 @@
-{% load static %}
-<!DOCTYPE html>
+{% load static inv %}
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar sesión - Sistema de Gestión de Inventario</title>
-    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iniciar sesión · MagnusSIG</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
 </head>
-<body>
-    <main class="login">
-        <h1>Inicia sesión</h1>
-        <!-- TODO: formulario con correo, contraseña y botón Ingresar -->
-        <form method="post">
-            {% csrf_token %}
-        </form>
-    </main>
-    <script src="{% static 'js/main.js' %}"></script>
+<body class="login">
+  <section class="login-l">
+    <div class="brand">
+      <span class="logo">{% icon 'box' 20 %}</span>
+      <b>MagnusSIG</b>
+    </div>
+    <div class="eyebrow">
+      <i></i>
+      MagnusSIG SAS · Neiva, Huila
+    </div>
+    <h1>Control de los insumos de seguridad y salud en el trabajo</h1>
+    <p>Gestiona insumos de emergencia, auditorías, capacitaciones y SG-SST desde una sola plataforma.</p>
+    <div class="feat">{% icon 'bell' 16 %}<span>Alertas de vencimiento y recarga</span></div>
+    <div class="feat">{% icon 'file' 16 %}<span>Entradas y salidas por cliente y factura</span></div>
+    <div class="feat">{% icon 'chart' 16 %}<span>Reportes de apoyo para el SG-SST</span></div>
+    <div class="login-foot">MagnusSIG SAS<br>Neiva, Huila · Colombia</div>
+  </section>
+  <section class="login-r">
+    <div class="login-box">
+      <div class="fecha">{% icon 'calendar' 15 %} {{ hoy|date:"j \d\e F \d\e Y" }}</div>
+      <span class="lock">{% icon 'lock' 20 %}</span>
+      <h2>Inicia sesión</h2>
+      <p class="muted">Ingresa tus credenciales para acceder a MagnusSIG 2.0.</p>
+      {% if error %}
+        <div class="toast error">{{ error }}</div>
+      {% endif %}
+      <form method="post">{% csrf_token %}
+        <label class="lbl">Correo</label>
+        <div class="iconfield">
+          <input class="input" type="email" name="correo" value="{{ correo }}" required autofocus placeholder="correo@empresa.com">
+          {% icon 'mail' 16 %}
+        </div>
+        <label class="lbl">Contraseña</label>
+        <div class="iconfield">
+          <input class="input" type="password" name="password" required id="pw" placeholder="••••••••">
+          <button type="button" class="eye" data-eye="pw" aria-label="Mostrar contraseña">{% icon 'eye' 16 %}</button>
+        </div>
+        <button class="btn btn-primary block" type="submit">{% icon 'arrow-right' 15 %} Ingresar</button>
+      </form>
+      <p class="auth">{% icon 'shield' 13 %} Acceso exclusivo para personal autorizado</p>
+      <div class="login-help">¿Necesitas acceso? Contacta al administrador.<br><small>© 2026 MagnusSIG SAS. Todos los derechos reservados.</small></div>
+    </div>
+  </section>
+  <script src="{% static 'js/app.js' %}"></script>
 </body>
 </html>

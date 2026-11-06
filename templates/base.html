@@ -1,35 +1,63 @@
-{% load static %}
-<!DOCTYPE html>
+{% load static inv %}
+<!doctype html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block titulo %}Sistema de Gestión de Inventario{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}MagnusSIG{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
 </head>
 <body>
-    <!-- Menú lateral: Panel, Productos, Stock actual, Proveedores, Movimientos, Reportes, Usuarios -->
-    <nav class="menu-lateral">
-        <h1>MagnusSIS</h1>
-        <ul>
-            <li><a href="#">Panel</a></li>
-            <li><a href="#">Productos</a></li>
-            <li><a href="#">Stock actual</a></li>
-            <li><a href="#">Proveedores</a></li>
-            <li><a href="#">Movimientos</a></li>
-            <li><a href="#">Reportes</a></li>
-            <li><a href="#">Usuarios</a></li>
-        </ul>
-    </nav>
-
-    <main class="contenido">
-        <header class="barra-superior">
-            <!-- Fecha, usuario y botón Cerrar sesión -->
-            <button type="button">Cerrar sesión</button>
-        </header>
-        {% block contenido %}{% endblock %}
-    </main>
-
-    <script src="{% static 'js/main.js' %}"></script>
+  <div class="app">
+    <aside class="side">
+      <div class="brand">
+        <span class="logo">{% icon 'box' 20 %}</span>
+        <b>MagnusSIG</b>
+      </div>
+      <div class="brand-sub">SG-SST e insumos de emergencia</div>
+      <nav>
+        <a href="{% url 'panel' %}" class="{% if activo == 'panel' %}on{% endif %}">{% icon 'panel' 18 %}Panel</a>
+        <a href="{% url 'productos' %}" class="{% if activo == 'productos' %}on{% endif %}">{% icon 'box' 18 %}Productos</a>
+        <a href="{% url 'stock' %}" class="{% if activo == 'stock' %}on{% endif %}">{% icon 'layers' 18 %}Stock y vencimientos</a>
+        <a href="{% url 'movimientos' %}" class="{% if activo == 'movimientos' %}on{% endif %}">{% icon 'swap' 18 %}Movimientos</a>
+        <a href="{% url 'proveedores' %}" class="{% if activo == 'proveedores' %}on{% endif %}">{% icon 'truck' 18 %}Proveedores</a>
+        <a href="{% url 'clientes' %}" class="{% if activo == 'clientes' %}on{% endif %}">{% icon 'users' 18 %}Clientes</a>
+        <a href="{% url 'reportes' %}" class="{% if activo == 'reportes' %}on{% endif %}">{% icon 'chart' 18 %}Reportes</a>
+      </nav>
+      <div class="side-foot">
+        <b>MagnusSIG SAS</b>
+        <span>{% icon 'pin' 12 %} Neiva, Huila</span>
+      </div>
+    </aside>
+    <div class="main">
+      <header class="top">
+        <div class="fecha">{% icon 'calendar' 15 %} {{ hoy|date:"j \d\e F \d\e Y" }}</div>
+        <div class="top-r">
+          <div class="user">
+            <span class="avatar">{{ iniciales }}</span>
+            <div>
+              <b>{{ nombre_usuario }}</b>
+              <small>{{ rol }}</small>
+            </div>
+          </div>
+          {% block topbtn %}{% endblock %}
+          <a class="btn btn-out" href="{% url 'logout' %}">{% icon 'logout' 15 %} Cerrar sesión</a>
+        </div>
+      </header>
+      <main class="content">
+        {% for m in messages %}
+          <div class="toast {{ m.tags }}" role="alert">{{ m }}
+            <button type="button" data-close aria-label="Cerrar">×</button>
+          </div>
+        {% endfor %}
+        {% block content %}{% endblock %}
+      </main>
+      <footer class="foot">
+        <span>{% block foot %}MagnusSIG SAS · Aplicación inventario MagnusSIG 2.0{% endblock %}</span>
+        <span>Neiva, Huila · Colombia</span>
+      </footer>
+    </div>
+  </div>
+  <script src="{% static 'js/app.js' %}"></script>
 </body>
 </html>
