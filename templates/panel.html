@@ -22,7 +22,7 @@
   <div class="head">
     <div>
       <h1>Panel principal</h1>
-      <p class="muted">Hola, {{ nombre_usuario|truncatewords:1 }}. Este es el estado de tus insumos de emergencia hoy.</p>
+      <p class="muted">Hola, {{ primer_nombre }}. Este es el estado de tus insumos de emergencia hoy.</p>
     </div>
     <div class="head-btns">
       <a class="btn btn-primary" href="{% url 'movimientos' %}">{% icon 'plus' 15 %} Registrar movimiento</a>
@@ -79,7 +79,7 @@
       <div class="between">
         <div>
           <h3>Movimientos de los últimos 7 días</h3>
-          <small class="muted">{{ desde|date:"j" }}-{{ hasta|date:"j b Y" }} · Unidades</small>
+          <small class="muted">{{ desde|date:"j b" }} – {{ hasta|date:"j b Y" }} · Unidades</small>
         </div>
         <div class="legend">
           <i class="dot e"></i>Entradas <i class="dot s"></i>Salidas
