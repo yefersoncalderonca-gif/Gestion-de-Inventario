@@ -1,6 +1,141 @@
-{% extends "base.html" %}
-{% block titulo %}Panel principal - Sistema de Gestión de Inventario{% endblock %}
-{% block contenido %}
-<h2>Panel principal</h2>
-<!-- TODO: indicadores del día, gráfica de movimientos y últimos movimientos -->
+{% extends 'base.html' %}
+{% load inv %}
+
+{% block title %}Panel · MagnusSIG{% endblock %}
+
+{% block topbtn %}
+  <a class="btn btn-out" href="{% url 'modo_operador' %}">
+    {% icon 'user' 15 %} 
+    {% if operador %}
+      Volver a administrador
+    {% else %}
+      Ver como operador
+    {% endif %}
+  </a>
+{% endblock %}
+
+{% block foot %}
+  MagnusSIG SAS · SG-SST · Capacitaciones · Auditorías · Insumos de emergencia
+{% endblock %}
+
+{% block content %}
+  <div class="head">
+    <div>
+      <h1>Panel principal</h1>
+      <p class="muted">Hola, {{ nombre_usuario|truncatewords:1 }}. Este es el estado de tus insumos de emergencia hoy.</p>
+    </div>
+    <div class="head-btns">
+      <a class="btn btn-primary" href="{% url 'movimientos' %}">{% icon 'plus' 15 %} Registrar movimiento</a>
+      <a class="btn btn-out" href="{% url 'stock' %}">Ver stock actual</a>
+    </div>
+  </div>
+
+  <div class="grid4">
+    <div class="card stat">
+      <div class="stat-t">Productos registrados <span class="chip blue">{% icon 'box' 16 %}</span></div>
+      <div class="num">{{ prods|length }}</div>
+      <small>{{ total_unidades }} unidades en inventario</small>
+    </div>
+
+    <div class="card stat">
+      <div class="stat-t">Vencen en 30 días <span class="chip red">{% icon 'alert' 16 %}</span></div>
+      <div class="num {% if vencen %}red{% endif %}">{{ vencen|length }}</div>
+      <small>
+        {% for p in vencen %}
+          {{ p.nombre }} vence {{ p.fecha_vencimiento|date:"d/m/Y" }}{% if not forloop.last %}, {% endif %}
+        {% empty %}
+          Sin vencimientos próximos
+        {% endfor %}
+      </small>
+    </div>
+
+    <div class="card stat">
+      <div class="stat-t">Recargas próximas <span class="chip red">{% icon 'alert' 16 %}</span></div>
+      <div class="num {% if recargas %}red{% endif %}">{{ recargas|length }}</div>
+      <small>
+        {% for p in recargas %}
+          {{ p.nombre }} recarga {{ p.proxima_recarga|date:"d/m/Y" }}{% if not forloop.last %}, {% endif %}
+        {% empty %}
+          Sin recargas próximas
+        {% endfor %}
+      </small>
+    </div>
+
+    <div class="card stat">
+      <div class="stat-t">Bajo stock mínimo <span class="chip red">{% icon 'alert' 16 %}</span></div>
+      <div class="num {% if bajo %}red{% endif %}">{{ bajo|length }}</div>
+      <small>
+        {% for p in bajo %}
+          {{ p.nombre }}{% if not forloop.last %} y {% endif %}
+        {% empty %}
+          Todo en regla
+        {% endfor %}
+      </small>
+    </div>
+  </div>
+
+  <div class="row2">
+    <div class="card pad">
+      <div class="between">
+        <div>
+          <h3>Movimientos de los últimos 7 días</h3>
+          <small class="muted">{{ desde|date:"j" }}-{{ hasta|date:"j b Y" }} · Unidades</small>
+        </div>
+        <div class="legend">
+          <i class="dot e"></i>Entradas <i class="dot s"></i>Salidas
+        </div>
+      </div>
+      <div class="chart">
+        <div class="ax">
+          <span>{{ tope }}</span>
+          <span>{{ tope_mid }}</span>
+          <span>0</span>
+        </div>
+        <div class="bars">
+          {% for d in dias %}
+            <div class="bg">
+              <div class="pair">
+                <div class="bar e" style="height:{{ d.eh|pct }}%"><em>{{ d.e }}</em></div>
+                <div class="bar s" style="height:{{ d.sh|pct }}%"><em>{{ d.s }}</em></div>
+              </div>
+              <span class="{% if forloop.last %}hoy{% endif %}">{{ d.fecha|date:"j b" }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card pad">
+      <div class="between">
+        <h3>Requieren atención</h3>
+        <span class="chip red cnt">{{ atencion|length }}</span>
+      </div>
+      <ul class="aten">
+        {% for p in atencion %}
+          <li>
+            <div>
+              <b>{{ p.nombre }}</b>
+              <small>
+                {{ p.codigo }} · 
+                {% if p.fecha_vencimiento %}
+                  Vence {{ p.fecha_vencimiento|date:"d/m/Y" }}
+                {% elif p.proxima_recarga %}
+                  Recarga {{ p.proxima_recarga|date:"d/m/Y" }}
+                {% else %}
+                  Sin vencimiento
+                {% endif %}
+              </small>
+            </div>
+            <div class="r">
+              <b class="red">{{ p.cantidad }} / {{ p.stock_minimo }}</b>
+              <small>actual / mínimo</small>
+            </div>
+          </li>
+        {% empty %}
+          <li class="muted">Nada pendiente.</li>
+        {% endfor %}
+      </ul>
+      <a class="link" href="{% url 'stock' %}">Ver stock actual {% icon 'arrow-right' 13 %}</a>
+    </div>
+  </div>
 {% endblock %}

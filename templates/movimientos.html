@@ -1,6 +1,259 @@
-{% extends "base.html" %}
-{% block titulo %}Registro de movimientos - Sistema de Gestión de Inventario{% endblock %}
-{% block contenido %}
-<h2>Registro de movimientos</h2>
-<!-- TODO: formulario de entrada o salida de productos -->
+{% extends 'base.html' %}
+{% load inv %}
+{% block title %}
+  Movimientos · MagnusSIG
 {% endblock %}
+{% block foot %}
+  MagnusSIG SAS · Sistema de gestión de inventario
+{% endblock %}
+{% block content %}
+  <div class="head">
+  <div>
+  <h1>
+   Movimientos
+  </h1>
+  <p class="muted">
+  Registra entradas y salidas de insumos de emergencia y consulta el historial reciente.
+  </p>
+  </div>
+  </div>
+  <div class="movgrid">
+  <form method="post" class="card pad" id="movform" data-tipo="{{ tipo_sel }}">
+  {% csrf_token %}
+  <div class="between">
+  <h3>
+  Formulario de movimiento
+  </h3>
+  <span class="tag">
+  Pendiente
+  </span>
+  </div>
+  {{ form.non_field_errors }}
+  <label class="lbl">
+  Tipo de movimiento *
+  </label>
+  <div class="seg">
+  <label class="
+  {% if tipo_sel == 'E' %}
+    on
+  {% endif %}
+  ">
+  <input type="radio" name="tipo" value="E"
+  {% if tipo_sel == 'E' %}
+    checked
+  {% endif %}
+  >
+  {% icon 'in' 14 %} Entrada
+  </label>
+  <label class="
+  {% if tipo_sel == 'S' %}
+    on
+  {% endif %}
+  ">
+  <input type="radio" name="tipo" value="S"
+  {% if tipo_sel == 'S' %}
+    checked
+  {% endif %}
+  >
+  {% icon 'out' 14 %} Salida
+  </label>
+  </div>
+  <small class="muted" id="hint-tipo">
+  {% if tipo_sel == 'E' %}
+    Una entrada aumenta las existencias del insumo seleccionado.
+    {% else %}
+      Una salida reduce las existencias del insumo seleccionado.
+    {% endif %}
+    </small>
+    <div class="fld">
+    <label>
+    Producto *
+    </label>
+    {{ form.producto }}
+    {% for e in form.producto.errors %}
+      <small class="err">
+      {{ e }}
+      </small>
+    {% endfor %}
+    </div>
+    <div class="g2">
+    <div class="fld">
+    <label>
+    Cantidad *
+    </label>
+    {{ form.cantidad }}
+    {% for e in form.cantidad.errors %}
+      <small class="err">
+      {{ e }}
+      </small>
+    {% endfor %}
+    <small class="muted">
+    Unidades a registrar.
+    </small>
+    </div>
+    <div class="fld">
+    <label>
+    Fecha *
+    </label>
+    {{ form.fecha }}
+    {% for e in form.fecha.errors %}
+      <small class="err">
+      {{ e }}
+      </small>
+    {% endfor %}
+    </div>
+    </div>
+    <div class="fld">
+    <label id="l-motivo">
+    Motivo
+    {% if tipo_sel == 'E' %}
+      de entrada
+      {% else %}
+        de salida
+      {% endif %}
+      *
+      </label>
+      {{ form.motivo }}
+      {% for e in form.motivo.errors %}
+        <small class="err">
+        {{ e }}
+        </small>
+      {% endfor %}
+      </div>
+      <div class="g2">
+      <div class="fld">
+      <label id="l-tercero">
+      {% if tipo_sel == 'E' %}
+        Proveedor u origen
+        {% else %}
+          Cliente o destino
+        {% endif %}
+        *
+        </label>
+        <input class="input" list="terceros" name="tercero" value="{{ form.tercero.value|default:'' }}" required>
+        <datalist id="terceros">
+        {% for t in terceros %}
+          <option value="{{ t }}">
+        {% endfor %}
+        </datalist>
+        {% for e in form.tercero.errors %}
+          <small class="err">
+          {{ e }}
+          </small>
+        {% endfor %}
+        </div>
+        <div class="fld">
+        <label>
+        Número de factura *
+        </label>
+        {{ form.factura }}
+        {% for e in form.factura.errors %}
+          <small class="err">
+          {{ e }}
+          </small>
+        {% endfor %}
+        </div>
+        </div>
+        <div class="fld">
+        <label>
+        Observaciones
+        </label>
+        {{ form.observaciones }}
+        <small class="muted">
+        Describe el motivo o una referencia del movimiento.
+        </small>
+        </div>
+        <div class="between">
+        <small class="muted">
+        * Campos obligatorios
+        </small>
+        <button class="btn btn-primary" type="submit">
+        {% icon 'check' 15 %} Registrar
+        </button>
+        </div>
+        </form>
+        <div>
+        <div class="histh">
+        <h3>
+        Historial compartido
+        </h3>
+        <form method="get" data-autosubmit>
+        <small class="muted">
+        {{ fecha_hist|date:"d/m/Y" }} · {{ hist|length }} registros
+        </small>
+        <input type="date" name="fecha" value="{{ fecha_hist|date:'Y-m-d' }}" class="mini">
+        </form>
+        </div>
+        <div class="card table">
+        <table>
+        <thead>
+        <tr>
+        <th>
+        Fecha
+        </th>
+        <th>
+        Tipo
+        </th>
+        <th>
+        Producto
+        </th>
+        <th>
+        Cantidad
+        </th>
+        <th>
+        Cliente o proveedor
+        </th>
+        <th>
+        Motivo
+        </th>
+        <th>
+        Factura
+        </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for m in hist %}
+          <tr>
+          <td>
+          {{ m.fecha|date:"d/m/Y" }}
+          </td>
+          <td>
+          <span class="tag
+          {% if m.tipo == 'E' %}
+            tin
+            {% else %}
+              tout
+            {% endif %}
+            ">
+            {{ m.get_tipo_display }}
+            </span>
+            </td>
+            <td>
+            {{ m.producto.nombre }}
+            </td>
+            <td>
+            {{ m.firmada }}
+            </td>
+            <td>
+            {{ m.tercero }}
+            </td>
+            <td>
+            {{ m.motivo }}
+            </td>
+            <td>
+            {{ m.factura }}
+            </td>
+            </tr>
+            {% empty %}
+              <tr>
+              <td colspan="7" class="empty">
+              Sin movimientos en esta fecha.
+              </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+            </div>
+            </div>
+            </div>
+          {% endblock %}

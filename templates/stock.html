@@ -1,6 +1,232 @@
-{% extends "base.html" %}
-{% block titulo %}Stock actual - Sistema de Gestión de Inventario{% endblock %}
-{% block contenido %}
-<h2>Stock actual</h2>
-<!-- TODO: existencias, stock mínimo y estado de cada producto -->
+{% extends 'base.html' %}
+{% load inv %}
+{% block title %}
+  Stock y vencimientos · MagnusSIG
 {% endblock %}
+{% block foot %}
+  MagnusSIG SAS · Sistema de gestión de inventario
+{% endblock %}
+{% block content %}
+  <div class="head">
+  <div>
+  <h1>
+  Stock y vencimientos
+  </h1>
+  <p class="muted">
+  Monitorea lotes, cantidades mínimas y fechas clave de insumos de emergencia.
+  </p>
+  </div>
+  <a class="btn btn-primary" href="{% url 'movimientos' %}">
+  {% icon 'plus' 15 %} Registrar movimiento
+  </a>
+  </div>
+  <div class="grid4">
+  <div class="card stat">
+  <div class="stat-t">
+  Productos monitoreados
+  <span class="chip blue">
+  {% icon 'layers' 16 %}
+  </span>
+  </div>
+  <div class="num">
+  {{ total }}
+  </div>
+  <small>
+  Insumos de emergencia activos
+  </small>
+  </div>
+  <div class="card stat">
+  <div class="stat-t">
+  Vence en 30 días
+  <span class="chip red">
+  {% icon 'alert' 16 %}
+  </span>
+  </div>
+  <div class="num
+  {% if vencen %}
+    red
+  {% endif %}
+  ">
+  {{ vencen|length }}
+  </div>
+  <small>
+  {% for p in vencen %}
+    {{ p.nombre }} vence en {{ p.dias_restantes }} días
+    {% empty %}
+      Sin vencimientos próximos
+    {% endfor %}
+    </small>
+    </div>
+    <div class="card stat">
+    <div class="stat-t">
+    Recarga próxima
+    <span class="chip red">
+    {% icon 'alert' 16 %}
+    </span>
+    </div>
+    <div class="num
+    {% if recargas %}
+      red
+    {% endif %}
+    ">
+    {{ recargas|length }}
+    </div>
+    <small>
+    {% for p in recargas %}
+      {{ p.nombre }} · Recarga en {{ p.dias_restantes }} días
+      {% empty %}
+        Sin recargas próximas
+      {% endfor %}
+      </small>
+      </div>
+      <div class="card stat">
+      <div class="stat-t">
+      Bajo mínimo
+      <span class="chip red">
+      {% icon 'alert' 16 %}
+      </span>
+      </div>
+      <div class="num
+      {% if bajo %}
+        red
+      {% endif %}
+      ">
+      {{ bajo|length }}
+      </div>
+      <small>
+      {% for p in bajo %}
+        {{ p.nombre }}
+        {% if not forloop.last %}
+          y
+        {% endif %}
+        {% empty %}
+          Todo en regla
+        {% endfor %}
+        </small>
+        </div>
+        </div>
+        <form class="filters" method="get" data-autosubmit>
+        <div class="search">
+        {% icon 'search' 15 %}
+        <input name="q" value="{{ q }}" placeholder="Buscar por nombre o código...">
+        </div>
+        <div class="selw">
+        <select name="estado" class="input">
+        <option value="">
+        Todos los estados
+        </option>
+        {% for v,l in estados %}
+          <option value="{{ v }}"
+          {% if v == estado %}
+            selected
+          {% endif %}
+          >
+          {{ l }}
+          </option>
+        {% endfor %}
+        </select>
+        </div>
+        <span class="muted right">
+        {{ n_filtrados }} productos · Cantidades en unidades
+        </span>
+        </form>
+        <div class="card table">
+        <table>
+        <thead>
+        <tr>
+        <th>
+        Código
+        </th>
+        <th>
+        Producto
+        </th>
+        <th>
+        Lote
+        </th>
+        <th class="r">
+        Cantidad
+        </th>
+        <th class="r">
+        Mínimo
+        </th>
+        <th>
+        Fecha clave
+        </th>
+        <th class="r">
+        Días rest.
+        </th>
+        <th>
+        Estado
+        </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for p in page %}
+          <tr>
+          <td class="muted">
+          {{ p.codigo }}
+          </td>
+          <td>
+          <b>
+          {{ p.nombre }}
+          </b>
+          <small class="sub">
+          SG-SST
+          </small>
+          </td>
+          <td>
+          {{ p.lote }}
+          </td>
+          <td class="r">
+          <b>
+          {{ p.cantidad }}
+          </b>
+          </td>
+          <td class="r">
+          {{ p.stock_minimo }}
+          </td>
+          <td class="muted">
+          {% if p.fecha_clave %}
+            {{ p.fecha_clave|date:"d/m/Y" }}
+            {% else %}
+              Sin fecha
+            {% endif %}
+            </td>
+            <td class="r">
+            {% if p.dias_restantes is not None %}
+              {{ p.dias_restantes }}
+              {% else %}
+                —
+              {% endif %}
+              </td>
+              <td>
+              <span class="state {{ p.estado|slugify }}">
+              {{ p.estado }}
+              </span>
+              </td>
+              </tr>
+              {% empty %}
+                <tr>
+                <td colspan="8" class="empty">
+                No hay resultados.
+                </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+              </table>
+              {% include 'partials/_paginacion.html' with etiqueta='productos' extra='' %}
+              </div>
+              {% if avisos %}
+                <div class="alertbox">
+                {% icon 'alert' 18 %}
+                <div>
+                <b>
+                Atención prioritaria
+                </b>
+                <p>
+                {{ avisos|join:" " }}
+                </p>
+                </div>
+                </div>
+              {% endif %}
+            {% endblock %}
