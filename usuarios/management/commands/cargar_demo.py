@@ -26,14 +26,14 @@ CATEGORIAS = [
     ("Higiene y bioseguridad", "Gel antibacterial, alcohol y desinfectantes"),
 ]
 PROVEEDORES = [
-    ("900123456-1", "Extintores del Sur S.A.S.", "3101234567", "ventas@extintoressur.com", "Cra. 5 # 12-30, Neiva"),
-    ("900654321-7", "Distribuidora Médica Huila", "3207654321", "pedidos@dmhuila.com", "Calle 8 # 4-15, Neiva"),
-    ("800987654-3", "Seguridad Industrial Andina", "3159876543", "contacto@sialandina.com", "Av. Circunvalar # 20-45, Bogotá"),
+    ("9001234561", "Extintores del Sur S.A.S.", "3101234567", "ventas@extintoressur.com", "Cra. 5 # 12-30, Neiva"),
+    ("9006543217", "Distribuidora Médica Huila", "3207654321", "pedidos@dmhuila.com", "Calle 8 # 4-15, Neiva"),
+    ("8009876543", "Seguridad Industrial Andina", "3159876543", "contacto@sialandina.com", "Av. Circunvalar # 20-45, Bogotá"),
 ]
 CLIENTES = [
-    ("891180001-2", "Constructora Surcolombiana Ltda.", "3001112233", "compras@surcolombiana.com"),
-    ("900456789-0", "Clínica Los Andes S.A.S.", "3012223344", "logistica@clinicalosandes.com"),
-    ("900222333-5", "Colegio San Agustín", "3023334455", "rectoria@colsanagustin.edu.co"),
+    ("8911800012", "Constructora Surcolombiana Ltda.", "3001112233", "compras@surcolombiana.com"),
+    ("9004567890", "Clínica Los Andes S.A.S.", "3012223344", "logistica@clinicalosandes.com"),
+    ("9002223335", "Colegio San Agustín", "3023334455", "rectoria@colsanagustin.edu.co"),
 ]
 # código, nombre, descripción, unidad, p.compra, p.venta, mínimo, lote, vence, recarga, categoría, proveedor
 PRODUCTOS = [
