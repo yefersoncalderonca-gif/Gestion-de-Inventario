@@ -13,7 +13,7 @@ Abrir http://127.0.0.1:8000/ e iniciar sesión con uno de los usuarios de ejempl
 
 | Rol | Correo | Contraseña |
 |---|---|---|
-| Administrador | admin@magnussig.com | demo-admin-2026 |
+| Administrador | admin@proyecto.com | 9876543210 |
 | Operador | bodega@magnussig.com | demo-bodega-2026 |
 | Operador | ventas@magnussig.com | demo-ventas-2026 |
 

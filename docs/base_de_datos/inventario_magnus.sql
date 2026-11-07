@@ -329,7 +329,7 @@ JOIN cliente cl             ON cl.id_cliente = ps.id_cliente;
 -- ---------------------------------------------------------------------
 
 INSERT INTO usuario (nombre, correo, contrasena, rol) VALUES
-('Administrador MagnusSIG', 'admin@magnussig.com',     SHA2('demo-admin-2026', 256),  'ADMINISTRADOR'),
+('Administrador MagnusSIG', 'admin@proyecto.com',     SHA2('9876543210', 256),  'ADMINISTRADOR'),
 ('Operador Bodega',         'bodega@magnussig.com',    SHA2('demo-bodega-2026', 256), 'OPERADOR'),
 ('Operador Ventas',         'ventas@magnussig.com',    SHA2('demo-ventas-2026', 256), 'OPERADOR');
 
