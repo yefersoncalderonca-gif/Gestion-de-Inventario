@@ -1,5 +1,6 @@
 from django import forms
 
+from validaciones import validar_nit, validar_telefono
 from .models import Cliente
 
 
@@ -12,3 +13,12 @@ class ClienteForm(forms.ModelForm):
         widgets = {f: forms.TextInput(attrs={"class": "input"}) for f in
                    ("nombre", "nit", "telefono", "direccion")}
         widgets["correo"] = forms.EmailInput(attrs={"class": "input"})
+
+    def clean_nit(self):
+        return validar_nit(self.cleaned_data.get("nit"))
+
+    def clean_telefono(self):
+        tel = (self.cleaned_data.get("telefono") or "").strip()
+        if not tel:  # el telefono es opcional
+            return tel
+        return validar_telefono(tel)
