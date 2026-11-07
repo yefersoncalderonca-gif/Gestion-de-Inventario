@@ -14,7 +14,7 @@ from reportes.models import Reporte
 from usuarios.models import Usuario
 
 USUARIOS = [
-    ("Administrador MagnusSIG", "admin@magnussig.com", "demo-admin-2026", "ADMINISTRADOR"),
+    ("Administrador MagnusSIG", "admin@proyecto.com", "9876543210", "ADMINISTRADOR"),
     ("Operador Bodega", "bodega@magnussig.com", "demo-bodega-2026", "OPERADOR"),
     ("Operador Ventas", "ventas@magnussig.com", "demo-ventas-2026", "OPERADOR"),
 ]
@@ -115,4 +115,4 @@ class Command(BaseCommand):
                        cliente=clis[t] if tipo == "S" else None).registrar()
         Reporte.objects.create(tipo="Stock actual", usuario=us[0])
         self.stdout.write(self.style.SUCCESS(
-            "Datos de ejemplo cargados. Entra con admin@magnussig.com / demo-admin-2026"))
+            "Datos de ejemplo cargados. Entra con admin@proyecto.com / 9876543210"))
