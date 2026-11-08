@@ -14,6 +14,23 @@ def requiere_sesion(vista):
         if not u:
             request.session.flush()
             return redirect("login")
+        if u.rol == "CLIENTE":          # el cliente solo usa la tienda
+            return redirect("tienda")
+        request.usuario = u
+        return vista(request, *a, **k)
+    return envuelta
+
+
+def requiere_cliente(vista):
+    """Solo entra un usuario con rol CLIENTE (la tienda)."""
+    @wraps(vista)
+    def envuelta(request, *a, **k):
+        u = usuario_actual(request)
+        if not u:
+            request.session.flush()
+            return redirect("login")
+        if u.rol != "CLIENTE":
+            return redirect("panel")
         request.usuario = u
         return vista(request, *a, **k)
     return envuelta

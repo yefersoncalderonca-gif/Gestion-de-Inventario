@@ -1,0 +1,59 @@
+{% load static inv %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carrito · MagnusSIG</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="shop">
+  {% include 'partials/_tienda_top.html' %}
+  <main class="shop-main">
+    {% for m in messages %}
+      <div class="toast {{ m.tags }}" role="alert">{{ m }}<button type="button" data-close aria-label="Cerrar">×</button></div>
+    {% endfor %}
+    <h1>Mi carrito</h1>
+    {% if lineas %}
+    <div class="card table">
+      <table>
+        <thead><tr><th>Producto</th><th>Precio</th><th>Cantidad</th><th class="right">Subtotal</th><th></th></tr></thead>
+        <tbody>
+        {% for l in lineas %}
+          <tr>
+            <td><b>{{ l.producto.nombre }}</b><br><small class="muted">{{ l.producto.stock }} disponibles</small>
+              {% if l.excede %}<br><small class="err">Ya no hay suficiente stock</small>{% endif %}</td>
+            <td>{{ l.producto.precio|cop }}</td>
+            <td>
+              <form method="post" action="{% url 'carrito_actualizar' %}" class="shop-comprar">
+                {% csrf_token %}<input type="hidden" name="producto" value="{{ l.producto.pk }}">
+                <input class="input" type="number" name="cantidad" value="{{ l.cantidad }}" min="1" max="{{ l.producto.stock }}" required aria-label="Cantidad">
+                <button class="btn btn-out" type="submit">Actualizar</button>
+              </form>
+            </td>
+            <td class="right"><b>{{ l.subtotal|cop }}</b></td>
+            <td>
+              <form method="post" action="{% url 'carrito_quitar' %}">
+                {% csrf_token %}<input type="hidden" name="producto" value="{{ l.producto.pk }}">
+                <button class="btn btn-out" type="submit">Quitar</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="card pad shop-total">
+      <span>Total a pagar</span><b>{{ total|cop }}</b>
+      <form method="post" action="{% url 'carrito_confirmar' %}">{% csrf_token %}
+        <button class="btn btn-primary" type="submit" {% if hay_exceso %}disabled{% endif %}>Confirmar compra</button>
+      </form>
+    </div>
+    {% else %}
+    <p class="muted">Tu carrito está vacío.</p>
+    {% endif %}
+    <p><a class="btn btn-out" href="{% url 'tienda' %}">Seguir comprando</a></p>
+  </main>
+  <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

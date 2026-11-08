@@ -59,7 +59,11 @@ def producto_editar(request, pk):
 def producto_eliminar(request, pk):
     obj = get_object_or_404(Producto, pk=pk)
     if obj.movimiento_set.exists():
-        messages.error(request, f"No se puede eliminar «{obj.nombre}»: ya tiene movimientos registrados.")
+        # Tiene historial: se archiva para no perder los movimientos ni los reportes.
+        obj.activo = False
+        obj.save(update_fields=["activo"])
+        messages.success(request, f"Producto «{obj.nombre}» eliminado del catálogo. "
+                                  "Su historial de movimientos se conserva.")
     else:
         obj.delete()
         messages.success(request, f"Producto «{obj.nombre}» eliminado.")

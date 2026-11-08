@@ -24,7 +24,7 @@ class MovimientoForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["producto"].queryset = Producto.objects.all()
-        self.fields["producto"].label_from_instance = lambda p: f"{p.codigo} · {p.nombre} (stock {p.stock})"
+        self.fields["producto"].label_from_instance = lambda p: f"{p.codigo} · {p.nombre} (stock {p.stock} {p.get_unidad_medida_display()})"
         self.fields["fecha"].initial = timezone.localdate()
 
     def clean_fecha(self):

@@ -1,0 +1,35 @@
+{% load static inv %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crear cuenta · MagnusSIG</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="login">
+  <section class="login-l">
+    <div class="brand"><span class="logo">{% icon 'box' 20 %}</span><b>MagnusSIG</b></div>
+    <h1>Compra insumos de seguridad y emergencia</h1>
+    <p>Crea tu cuenta de cliente, elige productos, agrégalos al carrito y confirma tu compra.</p>
+    <div class="login-foot">MagnusSIG SAS<br>Neiva, Huila · Colombia</div>
+  </section>
+  <section class="login-r">
+    <div class="login-box">
+      <h2>Crear cuenta de cliente</h2>
+      <p class="muted">Con tu correo y contraseña entrarás directo a la tienda.</p>
+      <form method="post">{% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for f in form %}
+          <label class="lbl" for="{{ f.id_for_label }}">{{ f.label }}</label>
+          {{ f }}
+          {% for e in f.errors %}<small class="err">{{ e }}</small>{% endfor %}
+        {% endfor %}
+        <button class="btn btn-primary block" type="submit">{% icon 'arrow-right' 15 %} Crear cuenta</button>
+      </form>
+      <div class="login-help">¿Ya tienes cuenta? <a href="{% url 'login' %}"><b>Inicia sesión</b></a></div>
+    </div>
+  </section>
+  <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

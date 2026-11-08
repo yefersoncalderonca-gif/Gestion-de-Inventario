@@ -9,12 +9,16 @@ from proveedores import views as proveedores
 from reportes import views as reportes
 from usuarios import views as usuarios
 
-from . import views
+from . import tienda, views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', usuarios.login_view, name='login'),
     path('salir/', usuarios.logout_view, name='logout'),
+    path('registro/', usuarios.registro, name='registro'),
+    path('usuarios/', usuarios.usuarios_lista, name='usuarios'),
+    path('usuarios/nuevo/', usuarios.usuario_nuevo, name='usuario_nuevo'),
+    path('usuarios/<int:pk>/editar/', usuarios.usuario_editar, name='usuario_editar'),
     path('modo-operador/', usuarios.modo_operador, name='modo_operador'),
     path('panel/', views.panel, name='panel'),
 
@@ -35,6 +39,14 @@ urlpatterns = [
     path('clientes/', clientes.clientes, name='clientes'),
     path('clientes/nuevo/', clientes.cliente_nuevo, name='cliente_nuevo'),
     path('clientes/<int:pk>/editar/', clientes.cliente_editar, name='cliente_editar'),
+    path('clientes/<int:pk>/eliminar/', clientes.cliente_eliminar, name='cliente_eliminar'),
 
     path('reportes/', reportes.reportes, name='reportes'),
+
+    path('tienda/', tienda.tienda, name='tienda'),
+    path('tienda/agregar/', tienda.agregar, name='tienda_agregar'),
+    path('tienda/carrito/', tienda.carrito, name='carrito'),
+    path('tienda/carrito/quitar/', tienda.quitar, name='carrito_quitar'),
+    path('tienda/carrito/actualizar/', tienda.actualizar, name='carrito_actualizar'),
+    path('tienda/carrito/confirmar/', tienda.confirmar, name='carrito_confirmar'),
 ]

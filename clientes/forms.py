@@ -15,7 +15,10 @@ class ClienteForm(forms.ModelForm):
         widgets["correo"] = forms.EmailInput(attrs={"class": "input"})
 
     def clean_nit(self):
-        return validar_nit(self.cleaned_data.get("nit"))
+        nit = validar_nit(self.cleaned_data.get("nit"))
+        if Cliente.todos.filter(nit=nit).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("Ya existe un cliente con este NIT (puede estar archivado).")
+        return nit
 
     def clean_telefono(self):
         tel = (self.cleaned_data.get("telefono") or "").strip()

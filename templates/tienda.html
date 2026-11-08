@@ -1,0 +1,68 @@
+{% load static inv %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tienda · MagnusSIG</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="shop">
+  {% include 'partials/_tienda_top.html' %}
+
+  <main class="shop-main">
+    {% for m in messages %}
+      <div class="toast {{ m.tags }}" role="alert">{{ m }}
+        <button type="button" data-close aria-label="Cerrar">×</button>
+      </div>
+    {% endfor %}
+
+    <h1>Productos disponibles</h1>
+    <p class="muted">Elige la cantidad y agrégala al carrito. Solo se muestran productos con existencias.</p>
+
+    <form method="get" class="shop-filtros">
+      <input class="input" type="search" name="q" value="{{ q }}" placeholder="Buscar por nombre o código...">
+      <select class="input" name="categoria">
+        <option value="">Todas las categorías</option>
+        {% for c in categorias %}<option value="{{ c.pk }}" {% if categoria == c.pk|stringformat:"s" %}selected{% endif %}>{{ c.nombre }}</option>{% endfor %}
+      </select>
+      <button class="btn btn-primary" type="submit">Buscar</button>
+    </form>
+
+    <div class="shop-grid">
+      {% for p in productos %}
+      <form method="post" action="{% url 'tienda_agregar' %}" class="card pad shop-item">
+        {% csrf_token %}
+        <input type="hidden" name="producto" value="{{ p.pk }}">
+        <span class="tag">{{ p.categoria.nombre|default:"Sin categoría" }}</span>
+        <h3>{{ p.nombre }}</h3>
+        <small class="muted">{{ p.codigo }}</small>
+        <div class="shop-precio">{{ p.precio|cop }} <small>por {{ p.get_unidad_medida_display }}</small></div>
+        <small class="muted">{{ p.stock }} disponibles</small>
+        <div class="shop-comprar">
+          <input class="input" type="number" name="cantidad" value="1" min="1" max="{{ p.stock }}" required aria-label="Cantidad">
+          <button class="btn btn-primary" type="submit">Agregar</button>
+        </div>
+      </form>
+      {% empty %}
+      <p class="muted">No hay productos que coincidan con la búsqueda.</p>
+      {% endfor %}
+    </div>
+
+    <h2>Mis compras</h2>
+    <div class="card table">
+      <table>
+        <thead><tr><th>Fecha</th><th>Producto</th><th>Cantidad</th><th>Factura</th></tr></thead>
+        <tbody>
+          {% for c in compras %}
+          <tr><td>{{ c.fecha|date:"d/m/Y" }}</td><td>{{ c.producto.nombre }}</td><td>{{ c.cantidad }}</td><td>{{ c.factura }}</td></tr>
+          {% empty %}
+          <tr><td colspan="4" class="muted">Aún no has hecho compras.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

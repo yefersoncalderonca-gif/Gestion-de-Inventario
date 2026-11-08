@@ -33,7 +33,7 @@ class ProductoForm(forms.ModelForm):
             "nombre": forms.TextInput(attrs=_input()),
             "categoria": forms.Select(attrs=_input()),
             "proveedor": forms.Select(attrs=_input()),
-            "unidad_medida": forms.TextInput(attrs=_input(placeholder="unidad, caja, frasco...")),
+            "unidad_medida": forms.Select(attrs=_input()),
             "precio_compra": forms.NumberInput(attrs=_input(min=0, step="1")),
             "precio": forms.NumberInput(attrs=_input(min=0, step="1")),
             "stock": forms.NumberInput(attrs=_input(min=0)),
@@ -44,20 +44,35 @@ class ProductoForm(forms.ModelForm):
             "descripcion": forms.TextInput(attrs=_input()),
         }
 
-    # Campos que aparecen por primera vez en la versión 2.0 (etiqueta «Nuevo 2.0»)
-    NUEVOS = ("unidad_medida", "precio_compra", "lote", "fecha_vencimiento", "fecha_proxima_recarga")
+    # Secciones del formulario: cada grupo reúne campos que se llenan juntos
+    SECCIONES = [
+        ("Identificación", ["codigo", "nombre", "descripcion"]),
+        ("Clasificación", ["categoria", "proveedor"]),
+        ("Unidad y precios", ["unidad_medida", "precio_compra", "precio"], 3),
+        ("Existencias", ["stock", "stock_minimo"]),
+        ("Vigencia (opcional)", ["lote", "fecha_vencimiento", "fecha_proxima_recarga"], 3),
+    ]
 
     def __init__(self, *args, editando=False, **kwargs):
         super().__init__(*args, **kwargs)
-        for nombre in self.NUEVOS:
-            self.fields[nombre].nuevo = True
-        self.fields["categoria"].empty_label = "Seleccione..."
-        self.fields["proveedor"].empty_label = "Seleccione..."
+        for nombre in ("categoria", "proveedor"):
+            self.fields[nombre].empty_label = "Seleccione..."
+            self.fields[nombre].required = True
         if editando:
             del self.fields["stock"]       # el stock lo cambian los movimientos
 
+    def secciones(self):
+        """(título, campos enlazados, columnas) por sección; omite campos ausentes, como stock al editar."""
+        return [(sec[0], [self[n] for n in sec[1] if n in self.fields], sec[2] if len(sec) > 2 else 2)
+                for sec in self.SECCIONES]
+
     def clean_codigo(self):
-        return self.cleaned_data["codigo"].strip().upper()
+        codigo = self.cleaned_data["codigo"].strip().upper()
+        repetido = Producto.todos.filter(codigo=codigo).exclude(pk=self.instance.pk).first()
+        if repetido:
+            motivo = " (está archivado)" if not repetido.activo else ""
+            raise forms.ValidationError(f"Ya existe un producto con este código{motivo}. Usa otro.")
+        return codigo
 
     def clean(self):
         datos = super().clean()
