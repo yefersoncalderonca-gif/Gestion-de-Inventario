@@ -1,5 +1,7 @@
 from django.db import models
 
+from aula.managers import ActivosManager
+
 
 class Cliente(models.Model):
     """Empresa o persona a la que se le venden insumos y se le prestan servicios."""
@@ -8,6 +10,10 @@ class Cliente(models.Model):
     telefono = models.CharField(max_length=20, blank=True)
     correo = models.EmailField(blank=True)
     direccion = models.CharField(max_length=255, blank=True)
+    activo = models.BooleanField(default=True)
+
+    objects = ActivosManager()      # los archivados no aparecen
+    todos = models.Manager()        # incluye archivados
 
     class Meta:
         ordering = ["nombre"]

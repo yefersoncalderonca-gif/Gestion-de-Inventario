@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.db.models import Count, Max, Q
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
 from aula.utils import paginar
 from usuarios.auth import requiere_sesion, solo_admin
@@ -51,3 +52,17 @@ def cliente_nuevo(request):
 @solo_admin
 def cliente_editar(request, pk):
     return _formulario(request, get_object_or_404(Cliente, pk=pk))
+
+
+@solo_admin
+@require_POST
+def cliente_eliminar(request, pk):
+    """Borra el cliente; si ya tiene movimientos se archiva para conservar el historial."""
+    obj = get_object_or_404(Cliente, pk=pk)
+    if obj.movimiento_set.exists():
+        obj.activo = False
+        obj.save(update_fields=["activo"])
+    else:
+        obj.delete()
+    messages.success(request, f"Cliente «{obj.nombre}» eliminado.")
+    return redirect("clientes")

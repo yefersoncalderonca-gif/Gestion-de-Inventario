@@ -4,7 +4,7 @@
   Clientes · MagnusSIG
 {% endblock %}
 {% block foot %}
-  MagnusSIG SAS · Sistema de gestión de insumos de emergencia
+  MagnusSIG SAS · Sistema de gestión de inventario
 {% endblock %}
 {% block content %}
   <div class="head">
@@ -121,6 +121,12 @@
         <a class="blue" href="{% url 'cliente_editar' r.c.pk %}">
         {% icon 'edit' 13 %} Editar
         </a>
+        <form method="post" action="{% url 'cliente_eliminar' r.c.pk %}" data-confirm="¿Eliminar al cliente «{{ r.c.nombre }}»?">
+        {% csrf_token %}
+        <button class="red">
+        {% icon 'trash' 13 %} Eliminar
+        </button>
+        </form>
         </td>
       {% endif %}
       </tr>

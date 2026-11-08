@@ -1,172 +1,68 @@
 {% extends 'base.html' %}
 {% load inv %}
-{% block title %}
-  {% if obj %}
-    Editar
-    {% else %}
-      Nuevo
-    {% endif %}
-    producto · MagnusSIG
-  {% endblock %}
-  {% block content %}
-    <div class="head">
-    <div>
-    <small class="muted">
-    Productos /
-    {% if obj %}
-      Editar producto
-      {% else %}
-        Nuevo producto
-      {% endif %}
-      </small>
-      <h1>
-      {% if obj %}
-        Editar producto
-        {% else %}
-          Nuevo producto
-        {% endif %}
-        </h1>
-        <p class="muted">
-        {% if obj %}
-          Actualiza la información de {{ obj.nombre }}.
-          {% else %}
-            Registra un nuevo producto en el catálogo.
-          {% endif %}
-          </p>
-          </div>
-          <a class="btn btn-out" href="{% url 'productos' %}">
-          {% icon 'arrow-left' 15 %} Volver a productos
-          </a>
-          </div>
-          <div class="formgrid">
-          <form method="post" class="card pad">
-          {% csrf_token %}
-          <div class="between">
-          <h3>
-          Información del producto
-          </h3>
-          <small class="muted">
-          * Campos obligatorios
-          </small>
-          </div>
-          {{ form.non_field_errors }}
-          <div class="g2">
-          {% for f in form %}
-            <div class="fld">
-            <label for="{{ f.id_for_label }}">
-            {{ f.label }}
-            {% if f.field.required %}
-              *
-            {% endif %}
-            {% if f.field.nuevo %}
-              <span class="new">
-              Nuevo 2.0
-              </span>
-            {% endif %}
-            </label>
+{% block title %}{% if obj %}Editar{% else %}Nuevo{% endif %} producto · MagnusSIG{% endblock %}
+{% block content %}
+<div class="head">
+  <div>
+    <small class="muted">Productos / {% if obj %}Editar producto{% else %}Nuevo producto{% endif %}</small>
+    <h1>{% if obj %}Editar producto{% else %}Nuevo producto{% endif %}</h1>
+    <p class="muted">{% if obj %}Actualiza la información de {{ obj.nombre }}.{% else %}Registra un nuevo producto en el catálogo.{% endif %}</p>
+  </div>
+  <a class="btn btn-out" href="{% url 'productos' %}">{% icon 'arrow-left' 15 %} Volver a productos</a>
+</div>
+
+<div class="formgrid">
+  <form method="post" class="card pad">
+    {% csrf_token %}
+    <div class="between"><h3>Información del producto</h3><small class="muted">* Campos obligatorios</small></div>
+    {{ form.non_field_errors }}
+    {% for titulo, campos, columnas in form.secciones %}
+      <fieldset class="seccion">
+        <legend>{{ titulo }}</legend>
+        <div class="g{{ columnas }}">
+          {% for f in campos %}
+          <div class="fld{% if f.name == 'descripcion' %} span-all{% endif %}">
+            <label for="{{ f.id_for_label }}">{{ f.label }}{% if f.field.required %} *{% endif %}</label>
             {{ f }}
-            {% for e in f.errors %}
-              <small class="err">
-              {{ e }}
-              </small>
-            {% endfor %}
-            <small class="muted">
-            {{ f.help_text }}
-            </small>
-            </div>
+            {% for e in f.errors %}<small class="err">{{ e }}</small>{% endfor %}
+            {% if f.help_text %}<small class="muted">{{ f.help_text }}</small>{% endif %}
+          </div>
           {% endfor %}
-          </div>
-          <div class="fbtns">
-          <a class="btn btn-out" href="{% url 'productos' %}">
-          Cancelar
-          </a>
-          <button class="btn btn-primary" type="submit">
-          {% icon 'check' 15 %} Guardar cambios
-          </button>
-          </div>
-          </form>
-          <aside>
-          {% if obj %}
-            <div class="card pad">
-            <h3>
-            {% icon 'box' 16 %} Resumen del producto
-            </h3>
-            <small class="muted">
-            {{ obj.codigo }}
-            </small>
-            <h2>
-            {{ obj.nombre }}
-            </h2>
-            <span class="tag">
-            {{ obj.categoria }}
-            </span>
-            <div class="kv">
-            <span>
-            Stock actual
-            </span>
-            <b>
-            {{ obj.cantidad }} unidades
-            </b>
-            </div>
-            <div class="kv">
-            <span>
-            Stock mínimo
-            </span>
-            <b>
-            {{ obj.stock_minimo }} unidades
-            </b>
-            </div>
-            <span class="state {{ obj.estado|slugify }}">
-            {% if obj.bajo_minimo %}
-              Bajo mínimo
-              {% else %}
-                Stock suficiente
-              {% endif %}
-              </span>
-              <hr>
-              <small class="muted">
-              Valor a precio de compra · COP
-              </small>
-              <div class="big">
-              {{ obj.valor_compra|cop }}
-              </div>
-              </div>
-              {% if obj.fecha_clave %}
-                <div class="info">
-                {% icon 'info' 16 %}
-                <div>
-                <b>
-                Control de fechas
-                </b>
-                <p>
-                {% if obj.dias_restantes < 0 %}
-                  Esta fecha ya pasó hace {{ obj.dias_restantes|add:0|stringformat:"d" }} días.
-                  {% else %}
-                    Faltan {{ obj.dias_restantes }} días para
-                    {% if obj.fecha_vencimiento %}
-                      el vencimiento
-                      {% else %}
-                        la recarga
-                      {% endif %}
-                      del lote {{ obj.lote }}.
-                    {% endif %}
-                    </p>
-                    </div>
-                    </div>
-                  {% endif %}
-                  {% else %}
-                    <div class="info">
-                    {% icon 'info' 16 %}
-                    <div>
-                    <b>
-                    Nuevo producto
-                    </b>
-                    <p>
-                    Completa el formulario. El stock mínimo activa las alertas del panel.
-                    </p>
-                    </div>
-                    </div>
-                  {% endif %}
-                  </aside>
-                  </div>
-                {% endblock %}
+        </div>
+      </fieldset>
+    {% endfor %}
+    <div class="fbtns">
+      <a class="btn btn-out" href="{% url 'productos' %}">Cancelar</a>
+      <button class="btn btn-primary" type="submit">{% icon 'check' 15 %} {% if obj %}Guardar cambios{% else %}Crear producto{% endif %}</button>
+    </div>
+  </form>
+
+  <aside>
+    {% if obj %}
+      <div class="card pad">
+        <h3>{% icon 'box' 16 %} Resumen del producto</h3>
+        <small class="muted">{{ obj.codigo }}</small>
+        <h2>{{ obj.nombre }}</h2>
+        <span class="tag">{{ obj.categoria }}</span>
+        <div class="kv"><span>Stock actual</span><b>{{ obj.cantidad }} {{ obj.get_unidad_medida_display }}</b></div>
+        <div class="kv"><span>Stock mínimo</span><b>{{ obj.stock_minimo }} {{ obj.get_unidad_medida_display }}</b></div>
+        <span class="state {{ obj.estado|slugify }}">{% if obj.bajo_minimo %}Bajo mínimo{% else %}Stock suficiente{% endif %}</span>
+        <hr>
+        <small class="muted">Valor a precio de compra · COP</small>
+        <div class="big">{{ obj.valor_compra|cop }}</div>
+      </div>
+      {% if obj.fecha_clave %}
+      <div class="info">{% icon 'info' 16 %}
+        <div><b>Control de fechas</b>
+          <p>{% if obj.dias_restantes < 0 %}Esta fecha ya pasó hace {{ obj.dias_restantes|add:0|stringformat:"d" }} días.{% else %}Faltan {{ obj.dias_restantes }} días para {% if obj.fecha_vencimiento %}el vencimiento{% else %}la recarga{% endif %} del lote {{ obj.lote }}.{% endif %}</p>
+        </div>
+      </div>
+      {% endif %}
+    {% else %}
+      <div class="info">{% icon 'info' 16 %}
+        <div><b>Nuevo producto</b><p>Completa el formulario. El stock mínimo activa las alertas del panel.</p></div>
+      </div>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}

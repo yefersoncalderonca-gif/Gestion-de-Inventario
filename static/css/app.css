@@ -167,4 +167,32 @@ body.login{display:grid;grid-template-columns:1.1fr 1fr;min-height:100vh;backgro
   .app{grid-template-columns:1fr}.side{position:static;height:auto}.side nav{flex-direction:row;flex-wrap:wrap}.side-foot,.brand-sub{display:none}
   .grid3,.cards3{grid-template-columns:1fr}.g2{grid-template-columns:1fr}.top{flex-wrap:wrap;gap:10px;padding:12px 16px}.content{padding:18px 14px}
   body.login{grid-template-columns:1fr}.login-l{display:none}.table{overflow-x:auto}
+  .side{padding:14px 14px 10px}.side nav{gap:4px;margin-top:10px}
+  .top-r{flex-wrap:wrap;width:100%;gap:8px}.top-r .user{flex:1 1 100%}.top-r .btn{flex:1 1 auto;justify-content:center}
+  .main{min-width:0}.content{overflow-x:hidden}
 }
+
+/* Tienda del cliente */
+body.shop{display:block;background:var(--bg,#f4f6fb)}
+.shop-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:var(--navy);color:#fff;padding:12px 28px}
+.shop-top .brand{padding:0}.shop-top .user b,.shop-top .user small{color:#fff}
+.shop-top .top-r{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.shop-main{max-width:1100px;margin:0 auto;padding:24px 16px}
+.shop-main h1{margin:0 0 4px}.shop-main h2{margin:28px 0 12px}
+.shop-filtros{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+.shop-filtros .input{flex:1 1 220px;width:auto}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.shop-item{display:flex;flex-direction:column;gap:6px;padding:16px}
+.shop-item h3{margin:4px 0 0;font-size:16px}
+.shop-precio{font-size:20px;font-weight:700;margin-top:6px}.shop-precio small{font-weight:400;color:var(--muted)}
+.shop-comprar{display:flex;gap:8px;margin-top:10px}.shop-comprar .input{width:80px}
+
+/* Formulario de producto por secciones */
+.seccion{border:0;border-top:1px solid var(--line);margin:14px 0 0;padding:6px 0 4px}
+.seccion legend{font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding:0 8px 0 0}
+.shop-total{display:flex;align-items:center;justify-content:flex-end;gap:18px;flex-wrap:wrap;margin:16px 0}
+.shop-total b{font-size:24px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:4px 16px}
+.span-all{grid-column:1/-1}
+@media(max-width:820px){.g3{grid-template-columns:1fr}}
+.g2>.fld,.g3>.fld{min-width:0}.fld .input,.fld input.input{width:100%;box-sizing:border-box}

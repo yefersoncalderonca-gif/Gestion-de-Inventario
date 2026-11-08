@@ -23,6 +23,7 @@
         <a href="{% url 'proveedores' %}" class="{% if activo == 'proveedores' %}on{% endif %}">{% icon 'truck' 18 %}Proveedores</a>
         <a href="{% url 'clientes' %}" class="{% if activo == 'clientes' %}on{% endif %}">{% icon 'users' 18 %}Clientes</a>
         <a href="{% url 'reportes' %}" class="{% if activo == 'reportes' %}on{% endif %}">{% icon 'chart' 18 %}Reportes</a>
+        {% if not operador %}<a href="{% url 'usuarios' %}" class="{% if activo == 'usuarios' %}on{% endif %}">{% icon 'users' 18 %}Usuarios</a>{% endif %}
       </nav>
       <div class="side-foot">
         <b>MagnusSIG SAS</b>
@@ -53,7 +54,7 @@
         {% block content %}{% endblock %}
       </main>
       <footer class="foot">
-        <span>{% block foot %}MagnusSIG SAS · Aplicación inventario MagnusSIG 2.0{% endblock %}</span>
+        <span>{% block foot %}MagnusSIG SAS · Sistema de gestión de inventario{% endblock %}</span>
         <span>Neiva, Huila · Colombia</span>
       </footer>
     </div>

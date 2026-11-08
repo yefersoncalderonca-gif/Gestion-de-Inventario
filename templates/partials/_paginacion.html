@@ -1,38 +1,9 @@
+{# Paginación: cada enlace va en UNA sola línea para que la URL no lleve espacios ni saltos de línea. #}
 <div class="tfoot">
-<span>
-Mostrando {{ page.object_list|length }} de {{ page.paginator.count }} {{ etiqueta }}{{ extra }}
-</span>
-<div class="pager">
-{% if page.has_previous %}
-  <a href="?
-  {% if page.qs %}
-    {{ page.qs }}&
-  {% endif %}
-  page={{ page.previous_page_number }}">
-  ‹
-  </a>
-{% endif %}
-{% for n in page.paginator.page_range %}
-  <a class="
-  {% if n == page.number %}
-    cur
-  {% endif %}
-  " href="?
-  {% if page.qs %}
-    {{ page.qs }}&
-  {% endif %}
-  page={{ n }}">
-  {{ n }}
-  </a>
-{% endfor %}
-{% if page.has_next %}
-  <a href="?
-  {% if page.qs %}
-    {{ page.qs }}&
-  {% endif %}
-  page={{ page.next_page_number }}">
-  ›
-  </a>
-{% endif %}
-</div>
+  <span>Mostrando {{ page.object_list|length }} de {{ page.paginator.count }} {{ etiqueta }}{{ extra }}</span>
+  <div class="pager">
+    {% if page.has_previous %}<a href="?{% if page.qs %}{{ page.qs }}&amp;{% endif %}page={{ page.previous_page_number }}" aria-label="Página anterior">‹</a>{% endif %}
+    {% for n in page.paginator.page_range %}<a class="{% if n == page.number %}cur{% endif %}" href="?{% if page.qs %}{{ page.qs }}&amp;{% endif %}page={{ n }}">{{ n }}</a>{% endfor %}
+    {% if page.has_next %}<a href="?{% if page.qs %}{{ page.qs }}&amp;{% endif %}page={{ page.next_page_number }}" aria-label="Página siguiente">›</a>{% endif %}
+  </div>
 </div>

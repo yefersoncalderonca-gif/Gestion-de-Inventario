@@ -4,6 +4,7 @@
 {% block title %}Panel · MagnusSIG{% endblock %}
 
 {% block topbtn %}
+  {% if rol == 'Administrador' %}
   <a class="btn btn-out" href="{% url 'modo_operador' %}">
     {% icon 'user' 15 %} 
     {% if operador %}
@@ -12,6 +13,7 @@
       Ver como operador
     {% endif %}
   </a>
+  {% endif %}
 {% endblock %}
 
 {% block foot %}

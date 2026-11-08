@@ -18,7 +18,10 @@ class ProveedorForm(forms.ModelForm):
         nit = (self.cleaned_data.get("nit") or "").strip()
         if not nit:  # en proveedores el NIT es opcional
             return None
-        return validar_nit(nit)
+        nit = validar_nit(nit)
+        if Proveedor.todos.filter(nit=nit).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("Ya existe un proveedor con este NIT (puede estar archivado).")
+        return nit
 
     def clean_telefono(self):
         tel = (self.cleaned_data.get("telefono") or "").strip()

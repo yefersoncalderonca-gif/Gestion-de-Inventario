@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load inv %}
+{% block title %}Usuarios · MagnusSIG{% endblock %}
+{% block content %}
+<div class="head">
+  <div>
+    <h1>Usuarios</h1>
+    <p class="muted">Cada cuenta entra a su propia interfaz según su rol: el administrador gestiona todo, el operador registra movimientos y el cliente compra en la tienda.</p>
+  </div>
+  <a class="btn btn-primary" href="{% url 'usuario_nuevo' %}">{% icon 'plus' 15 %} Nuevo usuario</a>
+</div>
+<div class="card table">
+  <table>
+    <thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
+    <tbody>
+      {% for u in cuentas %}
+      <tr>
+        <td><b>{{ u.nombre }}</b></td>
+        <td>{{ u.correo }}</td>
+        <td><span class="tag">{{ u.get_rol_display }}</span></td>
+        <td>{% if u.activo %}Activa{% else %}<span class="muted">Desactivada</span>{% endif %}</td>
+        <td class="acts"><a class="blue" href="{% url 'usuario_editar' u.pk %}">{% icon 'edit' 13 %} Editar</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

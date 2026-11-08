@@ -3,8 +3,8 @@ from django.db import models
 
 
 class Usuario(models.Model):
-    """Persona que accede al sistema (Administrador u Operador)."""
-    ROLES = [("ADMINISTRADOR", "Administrador"), ("OPERADOR", "Operador")]
+    """Persona que accede al sistema (Administrador, Operador o Cliente de la tienda)."""
+    ROLES = [("ADMINISTRADOR", "Administrador"), ("OPERADOR", "Operador"), ("CLIENTE", "Cliente")]
 
     nombre = models.CharField(max_length=100)
     correo = models.EmailField(unique=True)

@@ -1,0 +1,10 @@
+{% load inv %}
+<header class="shop-top">
+  <a class="brand" href="{% url 'tienda' %}"><span class="logo">{% icon 'box' 20 %}</span><b>MagnusSIG · Tienda</b></a>
+  <div class="top-r">
+    <a class="btn btn-out" href="{% url 'carrito' %}">{% icon 'swap' 15 %} Carrito ({{ items_carrito }})</a>
+    <div class="user"><span class="avatar">{{ iniciales }}</span>
+      <div><b>{{ nombre_usuario }}</b><small>{{ rol }}</small></div></div>
+    <a class="btn btn-out" href="{% url 'logout' %}">{% icon 'logout' 15 %} Cerrar sesión</a>
+  </div>
+</header>

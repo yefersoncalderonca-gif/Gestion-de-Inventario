@@ -51,7 +51,9 @@ def proveedor_editar(request, pk):
 def proveedor_eliminar(request, pk):
     obj = get_object_or_404(Proveedor, pk=pk)
     if obj.movimiento_set.exists():
-        messages.error(request, f"No se puede eliminar a «{obj.nombre}»: tiene entradas registradas.")
+        obj.activo = False        # tiene historial: se archiva y se conservan sus entradas
+        obj.save(update_fields=["activo"])
+        messages.success(request, f"Proveedor «{obj.nombre}» eliminado. Su historial de entradas se conserva.")
     else:
         obj.delete()          # los productos asociados quedan sin proveedor
         messages.success(request, f"Proveedor «{obj.nombre}» eliminado.")

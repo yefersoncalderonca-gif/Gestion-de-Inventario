@@ -1,4 +1,6 @@
 from django.db import models
+
+from aula.managers import ActivosManager
 from django.db.models import F, Q
 from django.utils import timezone
 
@@ -15,12 +17,22 @@ class Categoria(models.Model):
         return self.nombre
 
 
+UNIDADES_DE_MEDIDA = [
+    ("unidad", "Unidad (und)"), ("par", "Par"), ("kit", "Kit"),
+    ("caja", "Caja"), ("paquete", "Paquete"), ("bolsa", "Bolsa"), ("rollo", "Rollo"),
+    ("frasco", "Frasco"), ("botella", "Botella"), ("galon", "Galón (gal)"),
+    ("litro", "Litro (L)"), ("mililitro", "Mililitro (ml)"),
+    ("kilogramo", "Kilogramo (kg)"), ("gramo", "Gramo (g)"),
+    ("metro", "Metro (m)"), ("centimetro", "Centímetro (cm)"), ("milimetro", "Milímetro (mm)"),
+]
+
+
 class Producto(models.Model):
-    """Artículo del inventario."""
+    """Artículo del inventario. Si ya tiene movimientos no se borra: se archiva."""
     codigo = models.CharField(max_length=20, unique=True)
     nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=255, blank=True)
-    unidad_medida = models.CharField(max_length=20, default="unidad")
+    unidad_medida = models.CharField(max_length=20, choices=UNIDADES_DE_MEDIDA, default="unidad")
     precio_compra = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     precio = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     stock = models.IntegerField(default=0)
@@ -30,6 +42,10 @@ class Producto(models.Model):
     fecha_proxima_recarga = models.DateField(null=True, blank=True)
     categoria = models.ForeignKey("productos.Categoria", on_delete=models.SET_NULL, null=True, blank=True)
     proveedor = models.ForeignKey("proveedores.Proveedor", on_delete=models.SET_NULL, null=True, blank=True)
+    activo = models.BooleanField(default=True)
+
+    objects = ActivosManager()      # catálogo visible
+    todos = models.Manager()          # incluye archivados
 
     class Meta:
         ordering = ["nombre"]

@@ -14,9 +14,10 @@ from reportes.models import Reporte
 from usuarios.models import Usuario
 
 USUARIOS = [
-    ("Administrador MagnusSIG", "admin@magnussig.com", "demo-admin-2026", "ADMINISTRADOR"),
-    ("Operador Bodega", "bodega@magnussig.com", "demo-bodega-2026", "OPERADOR"),
-    ("Operador Ventas", "ventas@magnussig.com", "demo-ventas-2026", "OPERADOR"),
+    ("Administrador MagnusSIG", "admin@magnussig.com", "admin2026", "ADMINISTRADOR"),
+    ("Operador Bodega", "bodega@magnussig.com", "bodega2026", "OPERADOR"),
+    ("Operador Ventas", "ventas@magnussig.com", "ventas2026", "OPERADOR"),
+    ("Cliente de prueba", "cliente@magnussig.com", "cliente2026", "CLIENTE"),
 ]
 CATEGORIAS = [
     ("Extintores", "Extintores de distintos agentes y capacidades"),
@@ -82,17 +83,25 @@ RECIENTES = [
 class Command(BaseCommand):
     help = "Carga usuarios, catálogo, proveedores, clientes, productos y movimientos de ejemplo."
 
-    @transaction.atomic
-    def handle(self, *args, **opts):
-        if Producto.objects.exists() or Usuario.objects.exists():
-            self.stdout.write("Ya hay datos; no se cargó nada. (Borra db.sqlite3 para empezar de cero.)")
-            return
+    @staticmethod
+    def _asegurar_usuarios():
+        """Crea o restablece las cuentas de demostración: siempre quedan con estas claves."""
         us = []
         for nombre, correo, clave, rol in USUARIOS:
-            u = Usuario(nombre=nombre, correo=correo, rol=rol)
+            u = Usuario.objects.filter(correo__iexact=correo).first() or Usuario(correo=correo)
+            u.nombre, u.rol, u.activo = nombre, rol, True
             u.establecer_contrasena(clave)
             u.save()
             us.append(u)
+        return us
+
+    @transaction.atomic
+    def handle(self, *args, **opts):
+        us = self._asegurar_usuarios()
+        if Producto.objects.exists():
+            self.stdout.write(self.style.SUCCESS(
+                "Cuentas de demostración restablecidas. Ya había datos, no se cargaron de nuevo."))
+            return
         cats = [Categoria.objects.create(nombre=n, descripcion=d) for n, d in CATEGORIAS]
         provs = [Proveedor.objects.create(nit=a, nombre=b, telefono=c, correo=d, direccion=e)
                  for a, b, c, d, e in PROVEEDORES]
@@ -115,4 +124,4 @@ class Command(BaseCommand):
                        cliente=clis[t] if tipo == "S" else None).registrar()
         Reporte.objects.create(tipo="Stock actual", usuario=us[0])
         self.stdout.write(self.style.SUCCESS(
-            "Datos de ejemplo cargados. Entra con admin@magnussig.com / demo-admin-2026"))
+            "Datos de ejemplo cargados. Entra con admin@magnussig.com / admin2026"))
