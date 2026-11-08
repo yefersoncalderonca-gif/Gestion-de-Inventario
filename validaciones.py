@@ -1,23 +1,23 @@
-﻿"""Validaciones compartidas de NIT y teléfono.
+"""Validaciones compartidas de NIT y teléfono.
 Si cambia el rango permitido, se modifica SOLO aquí."""
+import re
+
 from django.core.exceptions import ValidationError
 
-NIT_MIN = 9          # mínimo de dígitos del NIT
-NIT_MAX = 10         # máximo de dígitos (9 + dígito de verificación)
-TEL_FIJO = 7         # dígitos de un teléfono fijo
-TEL_CELULAR = 10     # dígitos de un celular (empieza por 3)
+NIT_DIGITOS_BASE = 9     # dígitos del NIT sin dígito de verificación
+TEL_FIJO = 7             # dígitos de un teléfono fijo
+TEL_CELULAR = 10         # dígitos de un celular (empieza por 3)
+# 9 dígitos + dígito de verificación opcional, con o sin guion
+NIT_PATRON = re.compile(r"\d{%d}(-?\d)?" % NIT_DIGITOS_BASE, re.ASCII)
 
 
 def validar_nit(valor):
     """Devuelve el NIT limpio o lanza ValidationError."""
     nit = (valor or "").strip()
-    if not (nit.isascii() and nit.isdigit()):
+    if not NIT_PATRON.fullmatch(nit):
         raise ValidationError(
-            "El NIT debe tener solo números, sin puntos, espacios ni guiones.")
-    if not (NIT_MIN <= len(nit) <= NIT_MAX):
-        raise ValidationError(
-            "El NIT debe tener entre %d y %d dígitos (escribió %d)."
-            % (NIT_MIN, NIT_MAX, len(nit)))
+            "El NIT debe tener %d dígitos y, opcionalmente, el dígito de "
+            "verificación (ejemplo: 900123456-1)." % NIT_DIGITOS_BASE)
     return nit
 
 
