@@ -22,3 +22,18 @@ class ClienteForm(forms.ModelForm):
         if not tel:  # el telefono es opcional
             return tel
         return validar_telefono(tel)
+
+    def clean_nombre(self):
+        """Evita dos clientes con el mismo nombre (sin importar mayúsculas).
+
+        Los movimientos buscan al cliente por su nombre, así que un nombre
+        repetido podría asignar una salida al cliente equivocado.
+        """
+        nombre = " ".join((self.cleaned_data.get("nombre") or "").split())
+        repetidos = Cliente.objects.filter(nombre__iexact=nombre)
+        if self.instance.pk:
+            repetidos = repetidos.exclude(pk=self.instance.pk)
+        if repetidos.exists():
+            raise forms.ValidationError(
+                "Ya existe un cliente llamado «%s». Use otro nombre." % nombre)
+        return nombre
