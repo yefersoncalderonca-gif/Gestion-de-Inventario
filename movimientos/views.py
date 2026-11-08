@@ -10,7 +10,7 @@ from proveedores.models import Proveedor
 from usuarios.auth import requiere_sesion
 
 from .forms import MovimientoForm
-from .models import Movimiento
+from .models import Movimiento, StockInsuficienteError
 
 
 def _terceros(tipo):
@@ -32,19 +32,21 @@ def movimientos(request):
         if tercero is None:
             form.add_error("tercero", f"No existe ese {'proveedor' if tipo == 'E' else 'cliente'}. "
                                       "Escógelo de la lista o regístralo primero.")
-        elif tipo == "S" and d["cantidad"] > producto.stock:
-            form.add_error("cantidad", f"Stock insuficiente: solo hay {producto.stock} unidades.")
         else:
-            Movimiento(
-                tipo=tipo, cantidad=d["cantidad"], fecha=d["fecha"], motivo=d["motivo"],
-                factura=d["factura"], observaciones=d["observaciones"], producto=producto,
-                usuario=request.usuario,
-                proveedor=tercero if tipo == "E" else None,
-                cliente=tercero if tipo == "S" else None,
-            ).registrar()
-            messages.success(request, f"{'Entrada' if tipo == 'E' else 'Salida'} registrada: "
-                                      f"{d['cantidad']} × {producto.nombre}.")
-            return redirect("movimientos")
+            try:
+                Movimiento(
+                    tipo=tipo, cantidad=d["cantidad"], fecha=d["fecha"], motivo=d["motivo"],
+                    factura=d["factura"], observaciones=d["observaciones"], producto=producto,
+                    usuario=request.usuario,
+                    proveedor=tercero if tipo == "E" else None,
+                    cliente=tercero if tipo == "S" else None,
+                ).registrar()
+            except StockInsuficienteError as error:
+                form.add_error("cantidad", str(error))
+            else:
+                messages.success(request, f"{'Entrada' if tipo == 'E' else 'Salida'} registrada: "
+                                          f"{d['cantidad']} × {producto.nombre}.")
+                return redirect("movimientos")
 
     try:
         fecha_hist = date.fromisoformat(request.GET.get("fecha", ""))

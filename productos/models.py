@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import F, Q
 from django.utils import timezone
 
 
@@ -32,6 +33,10 @@ class Producto(models.Model):
 
     class Meta:
         ordering = ["nombre"]
+        constraints = [
+            # La base de datos rechaza cualquier stock negativo, venga de donde venga.
+            models.CheckConstraint(condition=Q(stock__gte=0), name="stock_no_negativo"),
+        ]
 
     def __str__(self) -> str:
         return f"{self.codigo} · {self.nombre}"
@@ -106,6 +111,10 @@ class Producto(models.Model):
         return "Vigente"
 
     def actualizar_stock(self, cantidad: int) -> None:
-        """Suma (o resta, si es negativa) unidades al stock y guarda."""
-        self.stock += cantidad
-        self.save(update_fields=["stock"])
+        """Suma (o resta, si es negativa) unidades al stock y guarda.
+
+        Usa una expresión F() para que la suma la haga la base de datos:
+        así dos operaciones simultáneas no se pisan entre sí.
+        """
+        Producto.objects.filter(pk=self.pk).update(stock=F("stock") + cantidad)
+        self.refresh_from_db(fields=["stock"])

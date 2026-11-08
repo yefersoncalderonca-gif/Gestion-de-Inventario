@@ -1,10 +1,23 @@
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
+
+from productos.models import Producto
+
+TIPO_ENTRADA = "E"
+TIPO_SALIDA = "S"
+
+
+class StockInsuficienteError(Exception):
+    """Se intentó sacar más unidades de las que hay en el inventario."""
+
+    def __init__(self, disponible: int):
+        self.disponible = disponible
+        super().__init__("Stock insuficiente: solo hay %d unidades." % disponible)
 
 
 class Movimiento(models.Model):
     """Entrada (compra a proveedor) o salida (venta a cliente) de un producto."""
-    TIPOS = [("E", "Entrada"), ("S", "Salida")]
+    TIPOS = [(TIPO_ENTRADA, "Entrada"), (TIPO_SALIDA, "Salida")]
 
     tipo = models.CharField(max_length=1, choices=TIPOS)
     cantidad = models.PositiveIntegerField()
@@ -34,11 +47,21 @@ class Movimiento(models.Model):
         return f"{'+' if self.tipo == 'E' else '−'}{self.cantidad}"
 
     def registrar(self) -> None:
-        """Guarda el movimiento y actualiza el stock del producto."""
-        from django.db import transaction
+        """Guarda el movimiento y actualiza el stock del producto.
+
+        Todo ocurre en una transacción: si la salida pide más unidades de las
+        que hay, lanza StockInsuficienteError y no se guarda nada. El producto
+        se bloquea (select_for_update) para que dos salidas simultáneas no
+        puedan dejar el stock en negativo.
+        """
         with transaction.atomic():
+            producto = Producto.objects.select_for_update().get(pk=self.producto_id)
+            if self.tipo == TIPO_SALIDA and self.cantidad > producto.stock:
+                raise StockInsuficienteError(producto.stock)
             self.save()
-            self.producto.actualizar_stock(self.cantidad if self.tipo == "E" else -self.cantidad)
+            variacion = self.cantidad if self.tipo == TIPO_ENTRADA else -self.cantidad
+            producto.actualizar_stock(variacion)
+            self.producto = producto
 
     @staticmethod
     def consultar_por_producto(producto_id: int):
