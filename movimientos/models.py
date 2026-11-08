@@ -62,7 +62,3 @@ class Movimiento(models.Model):
             variacion = self.cantidad if self.tipo == TIPO_ENTRADA else -self.cantidad
             producto.actualizar_stock(variacion)
             self.producto = producto
-
-    @staticmethod
-    def consultar_por_producto(producto_id: int):
-        return Movimiento.objects.filter(producto_id=producto_id)
