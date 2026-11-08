@@ -5,7 +5,6 @@ from django.db import models
 class Usuario(models.Model):
     """Persona que accede al sistema (Administrador u Operador)."""
     ROLES = [("ADMINISTRADOR", "Administrador"), ("OPERADOR", "Operador")]
-    PERMISOS_OPERADOR = {"consultar", "registrar_movimiento"}
 
     nombre = models.CharField(max_length=100)
     correo = models.EmailField(unique=True)
@@ -24,14 +23,6 @@ class Usuario(models.Model):
         return (self.activo
                 and correo.strip().lower() == self.correo.lower()
                 and check_password(contrasena, self.contrasena))
-
-    def cerrar_sesion(self) -> None:
-        """La sesión vive en el servidor; la vista de cierre la borra."""
-
-    def tiene_permiso(self, accion: str) -> bool:
-        if self.rol == "ADMINISTRADOR":
-            return True
-        return accion in self.PERMISOS_OPERADOR
 
     @property
     def iniciales(self) -> str:
