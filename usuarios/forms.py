@@ -27,21 +27,33 @@ class UsuarioForm(forms.ModelForm):
         """Campos, etiquetas y controles HTML del formulario."""
 
         model = Usuario
-        fields = ["nombre", "correo", "rol", "activo"]
-        labels = {"nombre": "Nombre", "correo": "Correo", "rol": "Rol", "activo": "Cuenta activa"}
+        fields = ["nombre", "correo", "rol", "area", "activo"]
+        labels = {
+            "nombre": "Nombre",
+            "correo": "Correo",
+            "rol": "Rol",
+            "area": "Área del operador",
+            "activo": "Cuenta activa",
+        }
         widgets = {
             "nombre": forms.TextInput(attrs={"class": "input"}),
             "correo": forms.EmailInput(attrs={"class": "input"}),
             "rol": forms.Select(attrs={"class": "input"}),
+            "area": forms.Select(attrs={"class": "input"}),
         }
 
     def __init__(self, *args, **kwargs):
         """La contraseña es obligatoria al crear y opcional al editar."""
         super().__init__(*args, **kwargs)
+        self.fields["area"].required = False  # si no se elige, el operador queda en «Todas»
         if not self.instance.pk:
             self.fields["contrasena_nueva"].required = True
         else:
             self.fields["contrasena_nueva"].label = "Contraseña nueva (opcional)"
+
+    def clean_area(self):
+        """Sin área elegida, la cuenta trabaja con entradas y salidas."""
+        return self.cleaned_data.get("area") or "TODAS"
 
     def clean_correo(self):
         """Pone el correo en minúsculas y verifica que no esté repetido."""

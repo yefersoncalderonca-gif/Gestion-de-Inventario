@@ -26,8 +26,13 @@ def _terceros(tipo):
 @requiere_sesion
 def movimientos(request):
     """Registra un movimiento (validando existencias) y muestra el historial de una fecha."""
-    tipo = request.POST.get("tipo") if request.method == "POST" else request.GET.get("tipo")
-    tipo = tipo if tipo in ("E", "S") else "E"
+    tipos = request.usuario.tipos_movimiento  # Ventas solo salidas, Bodega solo entradas
+    datos = request.POST if request.method == "POST" else request.GET
+    tipo = datos.get("tipo", "")
+    if request.method == "POST" and not (tipo and tipo in tipos):
+        messages.error(request, "Tu área no permite registrar ese tipo de movimiento.")
+        return redirect("movimientos")
+    tipo = tipo if tipo and tipo in tipos else tipos[0]
     form = MovimientoForm(request.POST or None)
 
     if request.method == "POST" and form.is_valid():
@@ -70,7 +75,7 @@ def movimientos(request):
     except ValueError:
         fecha_hist = timezone.localdate()
     hist = list(
-        Movimiento.objects.filter(fecha=fecha_hist).select_related(
+        Movimiento.objects.filter(fecha=fecha_hist, tipo__in=tipos).select_related(
             "producto", "cliente", "proveedor"
         )
     )
@@ -81,6 +86,7 @@ def movimientos(request):
             "activo": "movimientos",
             "form": form,
             "tipo_sel": tipo,
+            "tipos": tipos,
             "terceros": _terceros(tipo),
             "hist": hist,
             "fecha_hist": fecha_hist,
@@ -93,6 +99,8 @@ def movimientos(request):
 def terceros(request):
     """Lista de proveedores (entradas) o clientes (salidas) para el campo con sugerencias."""
     tipo = "S" if request.GET.get("tipo") == "S" else "E"
+    if tipo not in request.usuario.tipos_movimiento:
+        return JsonResponse({"terceros": []})
     return JsonResponse({"terceros": _terceros(tipo)})
 
 
@@ -100,6 +108,7 @@ def terceros(request):
 def factura_detalle(request, numero):
     """Muestra una factura (compra o venta) con el tercero, los productos y el total."""
     factura = armar_factura(numero)
-    if factura is None:
+    tipo = "S" if factura and factura["es_venta"] else "E"
+    if factura is None or tipo not in request.usuario.tipos_movimiento:
         raise Http404("No existe esa factura.")
     return render(request, "factura.html", {"activo": "movimientos", "factura": factura})

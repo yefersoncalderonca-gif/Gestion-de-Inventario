@@ -11,10 +11,17 @@ class Usuario(models.Model):
 
     ROLES = [("ADMINISTRADOR", "Administrador"), ("OPERADOR", "Operador"), ("CLIENTE", "Cliente")]
 
+    AREAS = [
+        ("TODAS", "Todas (entradas y salidas)"),
+        ("VENTAS", "Ventas (solo salidas)"),
+        ("BODEGA", "Bodega (solo entradas)"),
+    ]
+
     nombre = models.CharField(max_length=100)
     correo = models.EmailField(unique=True)
     contrasena = models.CharField(max_length=128)
     rol = models.CharField(max_length=20, choices=ROLES, default="OPERADOR")
+    area = models.CharField(max_length=10, choices=AREAS, default="TODAS")
     activo = models.BooleanField(default=True)
 
     def __str__(self) -> str:
@@ -32,6 +39,18 @@ class Usuario(models.Model):
             and correo.strip().lower() == self.correo.lower()
             and check_password(contrasena, self.contrasena)
         )
+
+    @property
+    def tipos_movimiento(self) -> str:
+        """Tipos de movimiento que puede ver y registrar: «E», «S» o «ES».
+
+        Solo el operador de Ventas (salidas) o de Bodega (entradas) queda limitado.
+        """
+        if self.rol == "OPERADOR" and self.area == "VENTAS":
+            return "S"
+        if self.rol == "OPERADOR" and self.area == "BODEGA":
+            return "E"
+        return "ES"
 
     @property
     def iniciales(self) -> str:
