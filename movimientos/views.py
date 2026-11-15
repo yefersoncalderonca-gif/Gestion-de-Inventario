@@ -4,6 +4,7 @@ from datetime import date
 
 from django.contrib import messages
 from django.http import JsonResponse
+from django.http import Http404
 from django.shortcuts import redirect, render
 from django.utils import timezone
 
@@ -11,6 +12,7 @@ from clientes.models import Cliente
 from proveedores.models import Proveedor
 from usuarios.auth import requiere_sesion
 
+from .facturas import armar_factura
 from .forms import MovimientoForm
 from .models import Movimiento, StockInsuficienteError, siguiente_factura
 
@@ -92,3 +94,12 @@ def terceros(request):
     """Lista de proveedores (entradas) o clientes (salidas) para el campo con sugerencias."""
     tipo = "S" if request.GET.get("tipo") == "S" else "E"
     return JsonResponse({"terceros": _terceros(tipo)})
+
+
+@requiere_sesion
+def factura_detalle(request, numero):
+    """Muestra una factura (compra o venta) con el tercero, los productos y el total."""
+    factura = armar_factura(numero)
+    if factura is None:
+        raise Http404("No existe esa factura.")
+    return render(request, "factura.html", {"activo": "movimientos", "factura": factura})

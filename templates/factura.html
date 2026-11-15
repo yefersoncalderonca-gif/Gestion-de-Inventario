@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load inv %}
+{% block title %}Factura {{ factura.numero }}{% endblock %}
+{% block content %}
+<div class="head no-print">
+  <div><h1>Factura {{ factura.numero }}</h1>
+  <p class="muted">Detalle de la factura con el tercero y los productos.</p></div>
+  <div class="head-actions">
+    <a class="btn btn-out" href="{% url 'movimientos' %}">Volver a movimientos</a>
+    <button class="btn btn-primary" type="button" onclick="window.print()">Imprimir</button>
+  </div>
+</div>
+{% include "partials/_factura.html" with staff=True %}
+{% endblock %}

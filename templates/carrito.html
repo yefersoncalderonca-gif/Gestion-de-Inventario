@@ -13,7 +13,7 @@
     {% for m in messages %}
       <div class="toast {{ m.tags }}" role="alert">{{ m }}<button type="button" data-close aria-label="Cerrar">×</button></div>
     {% endfor %}
-    <h1>Mi carrito</h1>
+    <h1>{% icon 'cart' 26 %} Mi carrito</h1>
     {% if lineas %}
     <div class="card table">
       <table>

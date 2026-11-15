@@ -93,3 +93,53 @@ class FacturaAutomaticaTests(TestCase):
 
     def test_una_factura_escrita_a_mano_se_respeta(self):
         self.assertEqual(self._registrar(TIPO_SALIDA, "WEB-1").factura, "WEB-1")
+
+
+class FacturaDetalleTests(TestCase):
+    """La factura muestra al tercero y los productos, y el comprador solo ve las suyas."""
+
+    def setUp(self):
+        """Crea un producto, dos clientes y una venta de la tienda."""
+        from clientes.models import Cliente
+        from productos.models import Producto
+        from usuarios.models import Usuario
+
+        self.producto = Producto.objects.create(
+            codigo="EXT-01", nombre="Extintor ABC", precio=95000, precio_compra=60000, stock=10
+        )
+        self.cliente = Cliente.objects.create(nit="900111222-3", nombre="Colegio San Agustín")
+        self.otro = Cliente.objects.create(nit="900333444-5", nombre="Otro Cliente")
+        self.usuario = Usuario(nombre="Admin", correo="a@x.co", rol="ADMINISTRADOR")
+        self.usuario.establecer_contrasena("clave12345")
+        self.usuario.save()
+        Movimiento(
+            tipo="S",
+            cantidad=2,
+            motivo="Venta",
+            factura="WEB-1",
+            producto=self.producto,
+            cliente=self.cliente,
+            usuario=self.usuario,
+        ).registrar()
+
+    def test_registrar_guarda_el_precio_del_momento(self):
+        movimiento = Movimiento.objects.get(factura="WEB-1")
+        self.assertEqual(movimiento.precio_unitario, 95000)
+        self.producto.precio = 120000
+        self.producto.save()
+        movimiento.refresh_from_db()
+        self.assertEqual(movimiento.precio_unitario, 95000)
+
+    def test_armar_factura_calcula_el_total(self):
+        from movimientos.facturas import armar_factura
+
+        factura = armar_factura("WEB-1")
+        self.assertEqual(factura["total"], 190000)
+        self.assertEqual(factura["tercero"], self.cliente)
+        self.assertEqual(len(factura["lineas"]), 1)
+
+    def test_un_comprador_no_ve_la_factura_de_otro(self):
+        from movimientos.facturas import armar_factura
+
+        self.assertIsNotNone(armar_factura("WEB-1", cliente=self.cliente))
+        self.assertIsNone(armar_factura("WEB-1", cliente=self.otro))
