@@ -110,7 +110,7 @@ Se crean con `python manage.py cargar_demo`.
 python manage.py test
 ```
 
-Ejecuta 32 pruebas automáticas y debe terminar con `OK`. Los casos de prueba manuales están en la carpeta `pruebas/`.
+Ejecuta 35 pruebas automáticas y debe terminar con `OK`. Los casos de prueba manuales están en la carpeta `pruebas/`.
 
 ## Estructura del proyecto
 

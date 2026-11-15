@@ -58,3 +58,19 @@ class ProveedorForm(forms.ModelForm):
         if not tel:  # el telefono es opcional
             return tel
         return validar_telefono(tel)
+
+    def clean_nombre(self) -> str:
+        """Evita dos proveedors con el mismo nombre (sin importar mayúsculas).
+
+        Los movimientos buscan al proveedor por su nombre, así que un nombre
+        repetido podría asignar una entrada al proveedor equivocado.
+        """
+        nombre = " ".join((self.cleaned_data.get("nombre") or "").split())
+        repetidos = Proveedor.objects.filter(nombre__iexact=nombre)
+        if self.instance.pk:
+            repetidos = repetidos.exclude(pk=self.instance.pk)
+        if repetidos.exists():
+            raise forms.ValidationError(
+                f"Ya existe un proveedor llamado «{nombre}». Use otro nombre."
+            )
+        return nombre
