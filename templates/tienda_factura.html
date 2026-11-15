@@ -1,0 +1,26 @@
+{% load static inv %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Factura {{ factura.numero }} · MagnusSIG</title>
+  <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="shop">
+  <div class="no-print">{% include 'partials/_tienda_top.html' %}</div>
+  <main class="shop-main">
+    <div class="no-print">
+      <h1>Tu factura</h1>
+      <p class="muted">Gracias por tu compra. Guarda este comprobante.</p>
+    </div>
+    {% include "partials/_factura.html" %}
+    <p class="no-print">
+      <a class="btn btn-out" href="{% url 'tienda' %}">Seguir comprando</a>
+      <button class="btn btn-primary" type="button" onclick="window.print()">Imprimir</button>
+    </p>
+  </main>
+  <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>

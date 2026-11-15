@@ -7,11 +7,13 @@ from decimal import Decimal
 
 from django.contrib import messages
 from django.db import transaction
+from django.http import Http404
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
 from clientes.models import Cliente
+from movimientos.facturas import armar_factura
 from movimientos.forms import CANTIDAD_MAXIMA
 from movimientos.models import Movimiento
 from productos.models import Categoria, Producto
@@ -211,4 +213,13 @@ def confirmar(request):
         request,
         f"Compra realizada (factura {factura}). Total pagado: ${total:,.0f}".replace(",", "."),
     )
-    return redirect("tienda")
+    return redirect("tienda_factura", numero=factura)
+
+
+@requiere_cliente
+def factura_compra(request, numero):
+    """Factura de una compra del cliente; solo puede ver las suyas."""
+    factura = armar_factura(numero, cliente=_cliente_de(request.usuario))
+    if factura is None:
+        raise Http404("No existe esa factura.")
+    return render(request, "tienda_factura.html", {**_contexto_base(request), "factura": factura})

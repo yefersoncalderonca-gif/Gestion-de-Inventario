@@ -237,7 +237,7 @@
             {{ m.motivo }}
             </td>
             <td>
-            {{ m.factura }}
+            {% if m.factura %}<a href="{% url 'factura' m.factura %}"><b>{{ m.factura }}</b></a>{% endif %}
             </td>
             </tr>
             {% empty %}

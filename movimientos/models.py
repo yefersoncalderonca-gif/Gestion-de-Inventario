@@ -51,6 +51,7 @@ class Movimiento(models.Model):
     motivo = models.CharField(max_length=100)
     factura = models.CharField(max_length=30, blank=True)
     observaciones = models.CharField(max_length=255, blank=True)
+    precio_unitario = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     producto = models.ForeignKey("productos.Producto", on_delete=models.PROTECT)
     usuario = models.ForeignKey(
         "usuarios.Usuario", on_delete=models.SET_NULL, null=True, blank=True
@@ -88,7 +89,8 @@ class Movimiento(models.Model):
         que hay, lanza StockInsuficienteError y no se guarda nada. El producto
         se bloquea (select_for_update) para que dos salidas simultáneas no
         puedan dejar el stock en negativo. Si el movimiento no trae número de
-        factura, se le asigna el siguiente de su serie (siguiente_factura).
+        factura, se le asigna el siguiente de su serie (siguiente_factura), y se guarda
+        el precio unitario del momento para poder mostrar la factura.
         """
         with transaction.atomic():
             producto = Producto.objects.select_for_update().get(pk=self.producto_id)
@@ -96,6 +98,10 @@ class Movimiento(models.Model):
                 raise StockInsuficienteError(producto.stock)
             if not self.factura:
                 self.factura = siguiente_factura(self.tipo)
+            if self.precio_unitario is None:  # se guarda el precio del momento para la factura
+                self.precio_unitario = (
+                    producto.precio if self.tipo == TIPO_SALIDA else producto.precio_compra
+                )
             self.save()
             variacion = self.cantidad if self.tipo == TIPO_ENTRADA else -self.cantidad
             producto.actualizar_stock(variacion)

@@ -1,0 +1,44 @@
+{% load static inv %}
+<article class="factura card pad">
+  <header class="factura-cab">
+    <div class="factura-emisor">
+      <img class="factura-logo" src="{% static 'img/logo.png' %}" alt="MagnusSIG">
+      <p><b>MagnusSIG SAS</b><br>Neiva, Huila · Colombia</p>
+    </div>
+    <div class="factura-num">
+      <small>{% if factura.es_venta %}Factura de venta{% else %}Factura de compra{% endif %}</small>
+      <h2>{{ factura.numero }}</h2>
+      <p>Fecha: <b>{{ factura.fecha|date:"d/m/Y" }}</b></p>
+    </div>
+  </header>
+
+  <section class="factura-tercero">
+    <h3>{% if factura.es_venta %}Datos del comprador{% else %}Datos del proveedor{% endif %}</h3>
+    {% with t=factura.tercero %}
+    <p><b>{{ t.nombre }}</b><br>
+      NIT: {{ t.nit|default:"—" }}<br>
+      {% if t.correo %}Correo: {{ t.correo }}<br>{% endif %}
+      {% if t.telefono %}Teléfono: {{ t.telefono }}<br>{% endif %}
+      {% if t.direccion %}Dirección: {{ t.direccion }}{% endif %}</p>
+    {% endwith %}
+  </section>
+
+  <div class="table">
+    <table>
+      <thead><tr><th>Código</th><th>Producto</th><th class="right">Cantidad</th><th class="right">Precio unitario</th><th class="right">Subtotal</th></tr></thead>
+      <tbody>
+      {% for l in factura.lineas %}
+        <tr>
+          <td>{{ l.producto.codigo }}</td>
+          <td><b>{{ l.producto.nombre }}</b>{% if l.producto.descripcion %}<br><small class="muted">{{ l.producto.descripcion }}</small>{% endif %}<br><small class="muted">Unidad: {{ l.producto.unidad }}</small></td>
+          <td class="right">{{ l.cantidad }}</td>
+          <td class="right">{{ l.precio|cop }}</td>
+          <td class="right"><b>{{ l.subtotal|cop }}</b></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+      <tfoot><tr><td colspan="4" class="right"><b>Total</b></td><td class="right"><b>{{ factura.total|cop }}</b></td></tr></tfoot>
+    </table>
+  </div>
+  <p class="muted factura-pie">{{ factura.motivo }}{% if staff and factura.atendido_por and factura.atendido_por.rol != "CLIENTE" %} · Atendido por {{ factura.atendido_por.nombre }}{% endif %}</p>
+</article>

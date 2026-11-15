@@ -200,3 +200,14 @@ body.shop{display:block;background:var(--bg,#f4f6fb)}
 .span-all{grid-column:1/-1}
 @media(max-width:820px){.g3{grid-template-columns:1fr}}
 .g2>.fld,.g3>.fld{min-width:0}.fld .input,.fld input.input{width:100%;box-sizing:border-box}
+
+.shop-top .shop-brand{display:flex;align-items:center;gap:10px;color:#fff}
+.shop-top .brand-logo{max-width:150px;padding:4px 8px;margin:0}
+.factura{max-width:900px}
+.factura-cab{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;border-bottom:2px solid var(--line,#e2e8f0);padding-bottom:14px;margin-bottom:14px}
+.factura-logo{display:block;width:190px;height:auto;margin-bottom:6px}
+.factura-num{text-align:right}.factura-num h2{margin:2px 0 6px}
+.factura-tercero{margin-bottom:14px}.factura-tercero h3{margin:0 0 4px}
+.factura tfoot td{border-top:2px solid #cbd5e1;font-size:1.05rem}
+.factura-pie{margin:12px 0 0}
+@media print{.side,.topbar,.shop-top,.no-print,.toast{display:none!important}.app{display:block}.factura{box-shadow:none;border:0}body{background:#fff}}
