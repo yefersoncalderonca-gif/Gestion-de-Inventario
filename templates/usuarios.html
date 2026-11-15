@@ -11,13 +11,14 @@
 </div>
 <div class="card table">
   <table>
-    <thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead>
+    <thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Área</th><th>Estado</th><th>Acciones</th></tr></thead>
     <tbody>
       {% for u in cuentas %}
       <tr>
         <td><b>{{ u.nombre }}</b></td>
         <td>{{ u.correo }}</td>
         <td><span class="tag">{{ u.get_rol_display }}</span></td>
+        <td>{% if u.rol == "OPERADOR" %}{{ u.get_area_display }}{% else %}<span class="muted">—</span>{% endif %}</td>
         <td>{% if u.activo %}Activa{% else %}<span class="muted">Desactivada</span>{% endif %}</td>
         <td class="acts"><a class="blue" href="{% url 'usuario_editar' u.pk %}">{% icon 'edit' 13 %} Editar</a></td>
       </tr>

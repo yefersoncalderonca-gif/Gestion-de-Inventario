@@ -143,3 +143,62 @@ class FacturaDetalleTests(TestCase):
 
         self.assertIsNotNone(armar_factura("WEB-1", cliente=self.cliente))
         self.assertIsNone(armar_factura("WEB-1", cliente=self.otro))
+
+
+class AreaOperadorTests(TestCase):
+    """Ventas solo trabaja con salidas y Bodega solo con entradas."""
+
+    def setUp(self):
+        """Crea un operador de cada área, un administrador y un producto con stock."""
+        from usuarios.models import Usuario
+
+        def crear(nombre, correo, rol, area):
+            usuario = Usuario(nombre=nombre, correo=correo, rol=rol, area=area)
+            usuario.establecer_contrasena("clave12345")
+            usuario.save()
+            return usuario
+
+        self.ventas = crear("Ventas", "v@x.co", "OPERADOR", "VENTAS")
+        self.bodega = crear("Bodega", "b@x.co", "OPERADOR", "BODEGA")
+        self.admin = crear("Admin", "a@x.co", "ADMINISTRADOR", "VENTAS")
+        self.producto = Producto.objects.create(codigo="P-1", nombre="Casco", stock=10)
+        for tipo in (TIPO_ENTRADA, TIPO_SALIDA):
+            Movimiento(
+                tipo=tipo, cantidad=1, motivo="Prueba", producto=self.producto, usuario=self.admin
+            ).registrar()
+
+    def _entrar(self, usuario):
+        """Inicia sesión como el usuario dado."""
+        sesion = self.client.session
+        sesion["usuario_id"] = usuario.pk
+        sesion.save()
+
+    def test_tipos_permitidos_por_area(self):
+        self.assertEqual(self.ventas.tipos_movimiento, "S")
+        self.assertEqual(self.bodega.tipos_movimiento, "E")
+        self.assertEqual(self.admin.tipos_movimiento, "ES")  # el área no limita al administrador
+
+    def test_historial_de_ventas_solo_muestra_salidas(self):
+        self._entrar(self.ventas)
+        hist = self.client.get("/movimientos/").context["hist"]
+        self.assertTrue(hist)
+        self.assertTrue(all(m.tipo == TIPO_SALIDA for m in hist))
+
+    def test_historial_de_bodega_solo_muestra_entradas(self):
+        self._entrar(self.bodega)
+        hist = self.client.get("/movimientos/").context["hist"]
+        self.assertTrue(hist)
+        self.assertTrue(all(m.tipo == TIPO_ENTRADA for m in hist))
+
+    def test_ventas_no_puede_registrar_entradas(self):
+        self._entrar(self.ventas)
+        antes = Movimiento.objects.count()
+        self.client.post("/movimientos/", {"tipo": "E", "producto": self.producto.pk})
+        self.assertEqual(Movimiento.objects.count(), antes)
+
+    def test_ventas_no_abre_facturas_de_compra(self):
+        self._entrar(self.ventas)
+        compra = Movimiento.objects.get(tipo=TIPO_ENTRADA).factura
+        venta = Movimiento.objects.get(tipo=TIPO_SALIDA).factura
+        self.assertEqual(self.client.get(f"/facturas/{compra}/").status_code, 404)
+        self.assertEqual(self.client.get(f"/facturas/{venta}/").status_code, 200)

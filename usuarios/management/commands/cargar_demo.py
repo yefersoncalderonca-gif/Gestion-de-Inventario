@@ -18,10 +18,10 @@ from reportes.models import Reporte
 from usuarios.models import Usuario
 
 USUARIOS = [
-    ("Administrador MagnusSIG", "admin@magnussig.com", "admin2026", "ADMINISTRADOR"),
-    ("Operador Bodega", "bodega@magnussig.com", "bodega2026", "OPERADOR"),
-    ("Operador Ventas", "ventas@magnussig.com", "ventas2026", "OPERADOR"),
-    ("Cliente de prueba", "cliente@magnussig.com", "cliente2026", "CLIENTE"),
+    ("Administrador MagnusSIG", "admin@magnussig.com", "admin2026", "ADMINISTRADOR", "TODAS"),
+    ("Operador Bodega", "bodega@magnussig.com", "bodega2026", "OPERADOR", "BODEGA"),
+    ("Operador Ventas", "ventas@magnussig.com", "ventas2026", "OPERADOR", "VENTAS"),
+    ("Cliente de prueba", "cliente@magnussig.com", "cliente2026", "CLIENTE", "TODAS"),
 ]
 CATEGORIAS = [
     ("Extintores", "Extintores de distintos agentes y capacidades"),
@@ -229,9 +229,9 @@ class Command(BaseCommand):
     def _asegurar_usuarios():
         """Crea o restablece las cuentas de demostración: siempre quedan con estas claves."""
         us = []
-        for nombre, correo, clave, rol in USUARIOS:
+        for nombre, correo, clave, rol, area in USUARIOS:
             u = Usuario.objects.filter(correo__iexact=correo).first() or Usuario(correo=correo)
-            u.nombre, u.rol, u.activo = nombre, rol, True
+            u.nombre, u.rol, u.area, u.activo = nombre, rol, area, True
             u.establecer_contrasena(clave)
             u.save()
             us.append(u)

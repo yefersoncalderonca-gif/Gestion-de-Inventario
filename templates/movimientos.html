@@ -31,6 +31,7 @@
   Tipo de movimiento *
   </label>
   <div class="seg">
+  {% if 'E' in tipos %}
   <label class="
   {% if tipo_sel == 'E' %}
     on
@@ -43,6 +44,8 @@
   >
   {% icon 'in' 14 %} Entrada
   </label>
+  {% endif %}
+  {% if 'S' in tipos %}
   <label class="
   {% if tipo_sel == 'S' %}
     on
@@ -55,6 +58,7 @@
   >
   {% icon 'out' 14 %} Salida
   </label>
+  {% endif %}
   </div>
   <small class="muted" id="hint-tipo">
   {% if tipo_sel == 'E' %}
