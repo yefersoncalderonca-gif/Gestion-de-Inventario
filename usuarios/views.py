@@ -1,3 +1,5 @@
+"""Vistas de acceso y administración de cuentas: login, registro y gestión de usuarios."""
+
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -13,6 +15,7 @@ def _destino(usuario):
 
 
 def login_view(request):
+    """Valida el correo y la contraseña; el mensaje de error no revela cuál de los dos falló."""
     actual = usuario_actual(request)
     if actual:
         return redirect(_destino(actual))
@@ -31,6 +34,7 @@ def login_view(request):
 
 
 def logout_view(request):
+    """Cierra la sesión y vuelve al login."""
     request.session.flush()
     return redirect("login")
 
@@ -59,31 +63,48 @@ def registro(request):
 @solo_admin
 def usuarios_lista(request):
     """Lista de cuentas con su rol y estado."""
-    return render(request, "usuarios.html", {
-        "activo": "usuarios", "cuentas": Usuario.objects.order_by("rol", "nombre")})
+    return render(
+        request,
+        "usuarios.html",
+        {"activo": "usuarios", "cuentas": Usuario.objects.order_by("rol", "nombre")},
+    )
 
 
 def _formulario_usuario(request, obj=None):
+    """Formulario de cuenta; impide que el administrador se quite su propio rol o se desactive."""
     form = UsuarioForm(request.POST or None, instance=obj)
     if request.method == "POST" and form.is_valid():
         propia = obj is not None and obj.pk == request.usuario.pk
-        if propia and (form.cleaned_data["rol"] != "ADMINISTRADOR" or not form.cleaned_data["activo"]):
-            form.add_error(None, "No puedes quitarte el rol de administrador ni desactivar tu propia cuenta.")
+        if propia and (
+            form.cleaned_data["rol"] != "ADMINISTRADOR" or not form.cleaned_data["activo"]
+        ):
+            form.add_error(
+                None, "No puedes quitarte el rol de administrador ni desactivar tu propia cuenta."
+            )
         else:
             cuenta = form.save()
             messages.success(request, f"Cuenta de «{cuenta.nombre}» guardada.")
             return redirect("usuarios")
-    return render(request, "form_simple.html", {
-        "activo": "usuarios", "form": form, "volver": "usuarios",
-        "titulo": "Editar usuario" if obj else "Nuevo usuario",
-        "sub": "Define el correo, la contraseña y el rol: cada rol entra a su propia interfaz."})
+    return render(
+        request,
+        "form_simple.html",
+        {
+            "activo": "usuarios",
+            "form": form,
+            "volver": "usuarios",
+            "titulo": "Editar usuario" if obj else "Nuevo usuario",
+            "sub": "Define el correo, la contraseña y el rol: cada rol entra a su propia interfaz.",
+        },
+    )
 
 
 @solo_admin
 def usuario_nuevo(request):
+    """Formulario para crear una cuenta (solo administrador)."""
     return _formulario_usuario(request)
 
 
 @solo_admin
 def usuario_editar(request, pk):
+    """Formulario para modificar una cuenta (solo administrador)."""
     return _formulario_usuario(request, get_object_or_404(Usuario, pk=pk))

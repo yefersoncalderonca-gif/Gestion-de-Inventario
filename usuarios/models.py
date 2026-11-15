@@ -1,9 +1,14 @@
+"""Modelo de usuarios con roles y contraseñas cifradas."""
+
 from django.contrib.auth.hashers import check_password, make_password
 from django.db import models
+
+from aula.utils import LETRAS_INICIALES
 
 
 class Usuario(models.Model):
     """Persona que accede al sistema (Administrador, Operador o Cliente de la tienda)."""
+
     ROLES = [("ADMINISTRADOR", "Administrador"), ("OPERADOR", "Operador"), ("CLIENTE", "Cliente")]
 
     nombre = models.CharField(max_length=100)
@@ -13,6 +18,7 @@ class Usuario(models.Model):
     activo = models.BooleanField(default=True)
 
     def __str__(self) -> str:
+        """Representa al usuario con su nombre."""
         return self.nombre
 
     def establecer_contrasena(self, texto: str) -> None:
@@ -20,10 +26,14 @@ class Usuario(models.Model):
         self.contrasena = make_password(texto)
 
     def iniciar_sesion(self, correo: str, contrasena: str) -> bool:
-        return (self.activo
-                and correo.strip().lower() == self.correo.lower()
-                and check_password(contrasena, self.contrasena))
+        """Indica si la cuenta está activa y el correo y la contraseña son correctos."""
+        return (
+            self.activo
+            and correo.strip().lower() == self.correo.lower()
+            and check_password(contrasena, self.contrasena)
+        )
 
     @property
     def iniciales(self) -> str:
-        return "".join(p[0] for p in self.nombre.split()[:2]).upper()
+        """Iniciales de las dos primeras palabras del nombre, para el avatar."""
+        return "".join(p[0] for p in self.nombre.split()[:LETRAS_INICIALES]).upper()

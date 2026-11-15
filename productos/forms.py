@@ -1,25 +1,53 @@
+"""Formulario de productos con validación de código y valores numéricos."""
+
 from django import forms
 
 from .models import Producto
 
+COLUMNAS_POR_DEFECTO = 2  # columnas de una sección del formulario si no se indica otra cantidad
+
 
 def _input(**extra):
+    """Atributos HTML comunes de los campos del formulario (clase de estilo y extras)."""
     return {"class": "input", **extra}
 
 
 class ProductoForm(forms.ModelForm):
+    """Crea o edita un producto; al editar no se permite cambiar el stock."""
+
     class Meta:
+        """Campos, etiquetas, ayudas y controles HTML del formulario."""
+
         model = Producto
-        fields = ["codigo", "nombre", "categoria", "proveedor", "unidad_medida", "precio_compra",
-                  "precio", "stock", "stock_minimo", "lote", "fecha_vencimiento",
-                  "fecha_proxima_recarga", "descripcion"]
+        fields = [
+            "codigo",
+            "nombre",
+            "categoria",
+            "proveedor",
+            "unidad_medida",
+            "precio_compra",
+            "precio",
+            "stock",
+            "stock_minimo",
+            "lote",
+            "fecha_vencimiento",
+            "fecha_proxima_recarga",
+            "descripcion",
+        ]
         labels = {
-            "codigo": "Código", "nombre": "Nombre", "categoria": "Categoría",
-            "proveedor": "Proveedor", "unidad_medida": "Unidad de medida",
-            "precio_compra": "Precio de compra (COP)", "precio": "Precio de venta (COP)",
-            "stock": "Stock inicial", "stock_minimo": "Stock mínimo", "lote": "Lote",
+            "codigo": "Código",
+            "nombre": "Nombre",
+            "categoria": "Categoría",
+            "proveedor": "Proveedor",
+            "unidad_medida": "Unidad de medida",
+            "precio_compra": "Precio de compra (COP)",
+            "precio": "Precio de venta (COP)",
+            "stock": "Stock inicial",
+            "stock_minimo": "Stock mínimo",
+            "lote": "Lote",
             "fecha_vencimiento": "Fecha de vencimiento",
-            "fecha_proxima_recarga": "Próxima recarga", "descripcion": "Descripción",
+            "fecha_proxima_recarga": "Próxima recarga",
+            "descripcion": "Descripción",
         }
         help_texts = {
             "codigo": "Único por producto. Ej.: EXT-ABC-10",
@@ -54,19 +82,27 @@ class ProductoForm(forms.ModelForm):
     ]
 
     def __init__(self, *args, editando=False, **kwargs):
+        """Hace obligatorias la categoría y el proveedor y quita el stock al editar."""
         super().__init__(*args, **kwargs)
         for nombre in ("categoria", "proveedor"):
             self.fields[nombre].empty_label = "Seleccione..."
             self.fields[nombre].required = True
         if editando:
-            del self.fields["stock"]       # el stock lo cambian los movimientos
+            del self.fields["stock"]  # el stock lo cambian los movimientos
 
     def secciones(self):
-        """(título, campos enlazados, columnas) por sección; omite campos ausentes, como stock al editar."""
-        return [(sec[0], [self[n] for n in sec[1] if n in self.fields], sec[2] if len(sec) > 2 else 2)
-                for sec in self.SECCIONES]
+        """(título, campos, columnas) por sección; omite campos ausentes (stock al editar)."""
+        return [
+            (
+                sec[0],
+                [self[n] for n in sec[1] if n in self.fields],
+                sec[2] if len(sec) > 2 else COLUMNAS_POR_DEFECTO,
+            )
+            for sec in self.SECCIONES
+        ]
 
     def clean_codigo(self):
+        """Normaliza el código a mayúsculas y verifica que sea único (incluso entre archivados)."""
         codigo = self.cleaned_data["codigo"].strip().upper()
         repetido = Producto.todos.filter(codigo=codigo).exclude(pk=self.instance.pk).first()
         if repetido:
@@ -75,6 +111,7 @@ class ProductoForm(forms.ModelForm):
         return codigo
 
     def clean(self):
+        """Rechaza precios y cantidades negativos."""
         datos = super().clean()
         for campo in ("precio_compra", "precio", "stock", "stock_minimo"):
             v = datos.get(campo)

@@ -1,9 +1,12 @@
+"""Funciones de sesión y contexto compartido por todas las plantillas."""
+
 from django.utils import timezone
 
 from .models import Usuario
 
 
 def usuario_actual(request):
+    """Devuelve el usuario activo de la sesión, o None si no hay sesión."""
     uid = request.session.get("usuario_id")
     return Usuario.objects.filter(pk=uid, activo=True).first() if uid else None
 

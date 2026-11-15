@@ -5,14 +5,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}MagnusSIG{% endblock %}</title>
+  <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}">
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
 </head>
 <body>
   <div class="app">
     <aside class="side">
-      <div class="brand">
-        <span class="logo">{% icon 'box' 20 %}</span>
-        <b>MagnusSIG</b>
+      <div class="brand-logo">
+        <img src="{% static 'img/logo.png' %}" alt="MagnusSIG - Asesoría e Ingeniería en Sistemas Integrados de Gestión">
       </div>
       <div class="brand-sub">SG-SST e insumos de emergencia</div>
       <nav>

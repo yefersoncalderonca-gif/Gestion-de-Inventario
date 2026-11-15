@@ -1,5 +1,9 @@
+"""Configuración de la aplicación de reportes."""
+
 from django.apps import AppConfig
 
 
 class ReportesConfig(AppConfig):
-    name = 'reportes'
+    """Configuración de la aplicación «reportes»."""
+
+    name = "reportes"
