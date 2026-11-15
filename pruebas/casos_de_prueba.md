@@ -1,6 +1,6 @@
 # Guía de casos de prueba (Entrega 3)
 
-Cómo hacer cada prueba: abrir la terminal en la carpeta del proyecto y ejecutar `python inventario.py`.
+Cómo hacer cada prueba: abrir la terminal en la carpeta del proyecto y ejecutar `python consola_v0/inventario.py`.
 Cada integrante hace SUS casos, anota el resultado en `pruebas/CP-XX.md` (qué escribió, qué pasó, aprobado o falló) y sube una captura a la carpeta `pruebas/`.
 
 | Integrante | Casos ejecutados |
@@ -43,7 +43,7 @@ Esperado: error "ya existe un producto" y pide otro nombre; escribir `Gel antiba
 **CP-07 Fecha inválida.** Opción 1; nombre `Camilla rígida`; cantidad `6`; precio `210000`; fecha `31/02/2026`, `2026-11-02`, `abc`, luego `15/11/2026`.
 Esperado: error en las 3 primeras y acepta la última.
 
-**CP-08 Persistencia.** Agregar 2 productos y salir con la opción 6. Volver a ejecutar `python inventario.py` y elegir la opción 2.
+**CP-08 Persistencia.** Agregar 2 productos y salir con la opción 6. Volver a ejecutar `python consola_v0/inventario.py` y elegir la opción 2.
 Esperado: dice "Inventario cargado: 2 producto(s)" y aparecen los mismos 2.
 
 **CP-09 Archivo inexistente.** Cerrar el programa, borrar el archivo con `Remove-Item inventario.json` y ejecutar el programa.

@@ -1,3 +1,5 @@
+"""Vistas de clientes: listado con filtros, alta, edición y eliminación."""
+
 from django.contrib import messages
 from django.db.models import Count, Max, Q
 from django.shortcuts import get_object_or_404, redirect, render
@@ -12,6 +14,7 @@ from .models import Cliente
 
 @requiere_sesion
 def clientes(request):
+    """Lista los clientes con su número de compras y la de la última; con búsqueda y filtro."""
     q = request.GET.get("q", "").strip()
     f = request.GET.get("f", "")
     lista = Cliente.objects.annotate(
@@ -25,32 +28,48 @@ def clientes(request):
     elif f == "sin":
         lista = lista.filter(salidas=0)
     filas = [{"c": c, "salidas": c.salidas, "ultima": c.ultima} for c in lista]
-    return render(request, "clientes.html", {
-        "activo": "clientes", "q": q, "f": f, "total": Cliente.objects.count(),
-        "page": paginar(request, filas),
-    })
+    return render(
+        request,
+        "clientes.html",
+        {
+            "activo": "clientes",
+            "q": q,
+            "f": f,
+            "total": Cliente.objects.count(),
+            "page": paginar(request, filas),
+        },
+    )
 
 
 def _formulario(request, obj=None):
+    """Muestra el formulario de cliente y lo guarda cuando es válido (alta o edición)."""
     form = ClienteForm(request.POST or None, instance=obj)
     if request.method == "POST" and form.is_valid():
         c = form.save()
         messages.success(request, f"Cliente «{c.nombre}» guardado.")
         return redirect("clientes")
-    return render(request, "form_simple.html", {
-        "activo": "clientes", "form": form, "volver": "clientes",
-        "titulo": "Editar cliente" if obj else "Nuevo cliente",
-        "sub": "Datos de quien compra insumos o contrata servicios.",
-    })
+    return render(
+        request,
+        "form_simple.html",
+        {
+            "activo": "clientes",
+            "form": form,
+            "volver": "clientes",
+            "titulo": "Editar cliente" if obj else "Nuevo cliente",
+            "sub": "Datos de quien compra insumos o contrata servicios.",
+        },
+    )
 
 
 @solo_admin
 def cliente_nuevo(request):
+    """Formulario para registrar un cliente (solo administrador)."""
     return _formulario(request)
 
 
 @solo_admin
 def cliente_editar(request, pk):
+    """Formulario para modificar un cliente existente (solo administrador)."""
     return _formulario(request, get_object_or_404(Cliente, pk=pk))
 
 

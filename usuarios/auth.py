@@ -1,3 +1,5 @@
+"""Decoradores que protegen las vistas según la sesión y el rol del usuario."""
+
 from functools import wraps
 
 from django.contrib import messages
@@ -8,23 +10,28 @@ from .context import es_operador, usuario_actual
 
 def requiere_sesion(vista):
     """Solo entra quien inició sesión."""
+
     @wraps(vista)
     def envuelta(request, *a, **k):
+        """Redirige al login si no hay sesión y a la tienda si el usuario es cliente."""
         u = usuario_actual(request)
         if not u:
             request.session.flush()
             return redirect("login")
-        if u.rol == "CLIENTE":          # el cliente solo usa la tienda
+        if u.rol == "CLIENTE":  # el cliente solo usa la tienda
             return redirect("tienda")
         request.usuario = u
         return vista(request, *a, **k)
+
     return envuelta
 
 
 def requiere_cliente(vista):
     """Solo entra un usuario con rol CLIENTE (la tienda)."""
+
     @wraps(vista)
     def envuelta(request, *a, **k):
+        """Redirige al login si no hay sesión y al panel si el usuario no es cliente."""
         u = usuario_actual(request)
         if not u:
             request.session.flush()
@@ -33,16 +40,20 @@ def requiere_cliente(vista):
             return redirect("panel")
         request.usuario = u
         return vista(request, *a, **k)
+
     return envuelta
 
 
 def solo_admin(vista):
     """Crear, editar y eliminar son solo para el administrador (no en modo operador)."""
+
     @wraps(vista)
     @requiere_sesion
     def envuelta(request, *a, **k):
+        """Bloquea la acción cuando el usuario actúa como operador."""
         if es_operador(request, request.usuario):
             messages.error(request, "Tu rol de operador no permite esta acción.")
             return redirect("panel")
         return vista(request, *a, **k)
+
     return envuelta

@@ -1,5 +1,9 @@
+"""Configuración de la aplicación de productos."""
+
 from django.apps import AppConfig
 
 
 class ProductosConfig(AppConfig):
-    name = 'productos'
+    """Configuración de la aplicación «productos»."""
+
+    name = "productos"

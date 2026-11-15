@@ -28,6 +28,7 @@ PRECIO_MAXIMO = 100000000
 # Persistencia: lectura y escritura del archivo JSON
 # ---------------------------------------------------------------------------
 
+
 def guardar_inventario(inventario):
     """Guarda la lista en el archivo JSON. Devuelve True si se pudo guardar."""
     temporal = ARCHIVO + ".tmp"
@@ -109,6 +110,7 @@ def cargar_inventario():
 # Validación de datos: cada función repite la pregunta hasta recibir un dato válido
 # ---------------------------------------------------------------------------
 
+
 def pedir_texto(mensaje):
     """Pide un texto que no esté vacío."""
     while True:
@@ -174,7 +176,10 @@ def pedir_fecha_opcional(mensaje):
             fecha = datetime.strptime(texto, "%d/%m/%Y")
             return fecha.strftime("%d/%m/%Y")
         except ValueError:
-            print("Error: fecha inválida. Use el formato dd/mm/aaaa con una fecha real (ejemplo: 15/11/2026).")
+            print(
+                "Error: fecha inválida. Use el formato dd/mm/aaaa "
+                "con una fecha real (ejemplo: 15/11/2026)."
+            )
 
 
 def pedir_si_no(mensaje):
@@ -191,6 +196,7 @@ def pedir_si_no(mensaje):
 # ---------------------------------------------------------------------------
 # Funciones auxiliares
 # ---------------------------------------------------------------------------
+
 
 def buscar_indice(inventario, nombre):
     """Devuelve la posición del producto con ese nombre, o -1 si no existe."""
@@ -222,6 +228,7 @@ def mostrar_producto(producto):
 # Funciones del sistema
 # ---------------------------------------------------------------------------
 
+
 def agregar_producto(inventario):
     """Pide los datos de un producto, los valida y lo agrega al inventario."""
     print("\n--- AGREGAR PRODUCTO ---")
@@ -237,12 +244,14 @@ def agregar_producto(inventario):
     precio = pedir_precio("Precio unitario: ")
     vencimiento = pedir_fecha_opcional("Fecha de vencimiento (dd/mm/aaaa, Enter si no aplica): ")
 
-    inventario.append({
-        "nombre": nombre,
-        "cantidad": cantidad,
-        "precio": precio,
-        "vencimiento": vencimiento,
-    })
+    inventario.append(
+        {
+            "nombre": nombre,
+            "cantidad": cantidad,
+            "precio": precio,
+            "vencimiento": vencimiento,
+        }
+    )
     if guardar_inventario(inventario):
         print("Producto '" + nombre + "' agregado y guardado correctamente.")
     else:
@@ -258,9 +267,15 @@ def mostrar_inventario(inventario):
     else:
         numero = 1
         for producto in inventario:
-            linea = (str(numero) + ". " + producto["nombre"]
-                     + " | Cantidad: " + str(producto["cantidad"])
-                     + " | Precio: " + formato_precio(producto["precio"]))
+            linea = (
+                str(numero)
+                + ". "
+                + producto["nombre"]
+                + " | Cantidad: "
+                + str(producto["cantidad"])
+                + " | Precio: "
+                + formato_precio(producto["precio"])
+            )
             if producto["vencimiento"] != "":
                 linea = linea + " | Vence: " + producto["vencimiento"]
             print(linea)
@@ -357,7 +372,9 @@ def mostrar_menu():
 # Programa principal
 # ---------------------------------------------------------------------------
 
+
 def main():
+    """Ejecuta el menú principal del programa de consola hasta que el usuario elige salir."""
     inventario = cargar_inventario()
     opcion = ""
 
@@ -393,4 +410,3 @@ def main():
 # El programa arranca aquí
 if __name__ == "__main__":
     main()
-    

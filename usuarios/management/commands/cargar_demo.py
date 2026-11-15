@@ -1,4 +1,8 @@
-"""Carga datos de ejemplo (los mismos de la base de datos MySQL). Uso: python manage.py cargar_demo"""
+"""Carga datos de ejemplo (los mismos de la base de datos MySQL).
+
+Uso: python manage.py cargar_demo
+"""
+
 from datetime import date, timedelta
 
 from django.utils import timezone
@@ -27,26 +31,162 @@ CATEGORIAS = [
     ("Higiene y bioseguridad", "Gel antibacterial, alcohol y desinfectantes"),
 ]
 PROVEEDORES = [
-    ("9001234561", "Extintores del Sur S.A.S.", "3101234567", "ventas@extintoressur.com", "Cra. 5 # 12-30, Neiva"),
-    ("9006543217", "Distribuidora Médica Huila", "3207654321", "pedidos@dmhuila.com", "Calle 8 # 4-15, Neiva"),
-    ("8009876543", "Seguridad Industrial Andina", "3159876543", "contacto@sialandina.com", "Av. Circunvalar # 20-45, Bogotá"),
+    (
+        "9001234561",
+        "Extintores del Sur S.A.S.",
+        "3101234567",
+        "ventas@extintoressur.com",
+        "Cra. 5 # 12-30, Neiva",
+    ),
+    (
+        "9006543217",
+        "Distribuidora Médica Huila",
+        "3207654321",
+        "pedidos@dmhuila.com",
+        "Calle 8 # 4-15, Neiva",
+    ),
+    (
+        "8009876543",
+        "Seguridad Industrial Andina",
+        "3159876543",
+        "contacto@sialandina.com",
+        "Av. Circunvalar # 20-45, Bogotá",
+    ),
 ]
 CLIENTES = [
     ("8911800012", "Constructora Surcolombiana Ltda.", "3001112233", "compras@surcolombiana.com"),
     ("9004567890", "Clínica Los Andes S.A.S.", "3012223344", "logistica@clinicalosandes.com"),
     ("9002223335", "Colegio San Agustín", "3023334455", "rectoria@colsanagustin.edu.co"),
 ]
-# código, nombre, descripción, unidad, p.compra, p.venta, mínimo, lote, vence, recarga, categoría, proveedor
+# código, nombre, descripción, unidad, p.compra, p.venta, mínimo, lote,
+# vence, recarga, categoría, proveedor
 PRODUCTOS = [
-    ("EXT-ABC-10", "Extintor ABC 10 lb", "Extintor multipropósito polvo químico seco", "unidad", 70000, 95000, 5, "L2026-01", date(2027, 6, 30), date(2027, 1, 15), 0, 0),
-    ("EXT-CO2-10", "Extintor CO2 10 lb", "Extintor de dióxido de carbono", "unidad", 150000, 195000, 3, "L2026-02", date(2027, 9, 30), date(2027, 3, 10), 0, 0),
-    ("BOT-TA-001", "Botiquín tipo A", "Botiquín para empresas hasta 10 personas", "unidad", 32000, 48000, 8, "L2026-03", date(2026, 12, 15), None, 1, 1),
-    ("BOT-TB-001", "Botiquín tipo B", "Botiquín para empresas de 10 a 50 personas", "unidad", 78000, 110000, 4, "L2026-03", date(2027, 2, 28), None, 1, 1),
-    ("EPP-CAS-01", "Casco de seguridad", "Casco dieléctrico con barboquejo", "unidad", 21000, 32000, 10, "", None, None, 2, 2),
-    ("EPP-GUA-01", "Guantes de nitrilo", "Caja x 100 unidades", "caja", 30000, 48000, 6, "L2026-05", date(2028, 5, 31), None, 2, 2),
-    ("EPP-TAP-95", "Tapabocas N95", "Caja x 20 unidades", "caja", 45000, 65000, 10, "L2026-06", date(2027, 11, 30), None, 2, 1),
-    ("CAM-RIG-01", "Camilla rígida", "Camilla de polietileno con arnés", "unidad", 150000, 210000, 2, "", None, None, 3, 2),
-    ("HIG-GEL-500", "Gel antibacterial 500 ml", "Frasco con dosificador", "frasco", 7000, 12000, 15, "L2026-07", date(2026, 12, 1), None, 4, 1),
+    (
+        "EXT-ABC-10",
+        "Extintor ABC 10 lb",
+        "Extintor multipropósito polvo químico seco",
+        "unidad",
+        70000,
+        95000,
+        5,
+        "L2026-01",
+        date(2027, 6, 30),
+        date(2027, 1, 15),
+        0,
+        0,
+    ),
+    (
+        "EXT-CO2-10",
+        "Extintor CO2 10 lb",
+        "Extintor de dióxido de carbono",
+        "unidad",
+        150000,
+        195000,
+        3,
+        "L2026-02",
+        date(2027, 9, 30),
+        date(2027, 3, 10),
+        0,
+        0,
+    ),
+    (
+        "BOT-TA-001",
+        "Botiquín tipo A",
+        "Botiquín para empresas hasta 10 personas",
+        "unidad",
+        32000,
+        48000,
+        8,
+        "L2026-03",
+        date(2026, 12, 15),
+        None,
+        1,
+        1,
+    ),
+    (
+        "BOT-TB-001",
+        "Botiquín tipo B",
+        "Botiquín para empresas de 10 a 50 personas",
+        "unidad",
+        78000,
+        110000,
+        4,
+        "L2026-03",
+        date(2027, 2, 28),
+        None,
+        1,
+        1,
+    ),
+    (
+        "EPP-CAS-01",
+        "Casco de seguridad",
+        "Casco dieléctrico con barboquejo",
+        "unidad",
+        21000,
+        32000,
+        10,
+        "",
+        None,
+        None,
+        2,
+        2,
+    ),
+    (
+        "EPP-GUA-01",
+        "Guantes de nitrilo",
+        "Caja x 100 unidades",
+        "caja",
+        30000,
+        48000,
+        6,
+        "L2026-05",
+        date(2028, 5, 31),
+        None,
+        2,
+        2,
+    ),
+    (
+        "EPP-TAP-95",
+        "Tapabocas N95",
+        "Caja x 20 unidades",
+        "caja",
+        45000,
+        65000,
+        10,
+        "L2026-06",
+        date(2027, 11, 30),
+        None,
+        2,
+        1,
+    ),
+    (
+        "CAM-RIG-01",
+        "Camilla rígida",
+        "Camilla de polietileno con arnés",
+        "unidad",
+        150000,
+        210000,
+        2,
+        "",
+        None,
+        None,
+        3,
+        2,
+    ),
+    (
+        "HIG-GEL-500",
+        "Gel antibacterial 500 ml",
+        "Frasco con dosificador",
+        "frasco",
+        7000,
+        12000,
+        15,
+        "L2026-07",
+        date(2026, 12, 1),
+        None,
+        4,
+        1,
+    ),
 ]
 # tipo, cantidad, fecha, motivo, factura, observación, producto, usuario, tercero
 MOVIMIENTOS = [
@@ -81,6 +221,8 @@ RECIENTES = [
 
 
 class Command(BaseCommand):
+    """Comando «cargar_demo»: carga datos de ejemplo y restablece las cuentas de demostración."""
+
     help = "Carga usuarios, catálogo, proveedores, clientes, productos y movimientos de ejemplo."
 
     @staticmethod
@@ -97,31 +239,72 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def handle(self, *args, **opts):
+        """Restablece las cuentas y, si el catálogo está vacío, crea los datos de ejemplo."""
         us = self._asegurar_usuarios()
         if Producto.objects.exists():
-            self.stdout.write(self.style.SUCCESS(
-                "Cuentas de demostración restablecidas. Ya había datos, no se cargaron de nuevo."))
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "Cuentas de demostración restablecidas. "
+                    "Ya había datos, no se cargaron de nuevo."
+                )
+            )
             return
         cats = [Categoria.objects.create(nombre=n, descripcion=d) for n, d in CATEGORIAS]
-        provs = [Proveedor.objects.create(nit=a, nombre=b, telefono=c, correo=d, direccion=e)
-                 for a, b, c, d, e in PROVEEDORES]
-        clis = [Cliente.objects.create(nit=a, nombre=b, telefono=c, correo=d) for a, b, c, d in CLIENTES]
-        prods = [Producto.objects.create(
-            codigo=c, nombre=n, descripcion=d, unidad_medida=u, precio_compra=pc, precio=pv,
-            stock=0, stock_minimo=mn, lote=lo, fecha_vencimiento=ve, fecha_proxima_recarga=re,
-            categoria=cats[ca], proveedor=provs[pr])
-            for c, n, d, u, pc, pv, mn, lo, ve, re, ca, pr in PRODUCTOS]
+        provs = [
+            Proveedor.objects.create(nit=a, nombre=b, telefono=c, correo=d, direccion=e)
+            for a, b, c, d, e in PROVEEDORES
+        ]
+        clis = [
+            Cliente.objects.create(nit=a, nombre=b, telefono=c, correo=d) for a, b, c, d in CLIENTES
+        ]
+        prods = [
+            Producto.objects.create(
+                codigo=c,
+                nombre=n,
+                descripcion=d,
+                unidad_medida=u,
+                precio_compra=pc,
+                precio=pv,
+                stock=0,
+                stock_minimo=mn,
+                lote=lo,
+                fecha_vencimiento=ve,
+                fecha_proxima_recarga=re,
+                categoria=cats[ca],
+                proveedor=provs[pr],
+            )
+            for c, n, d, u, pc, pv, mn, lo, ve, re, ca, pr in PRODUCTOS
+        ]
         for tipo, cant, fecha, motivo, fac, obs, p, u, t in MOVIMIENTOS:
-            Movimiento(tipo=tipo, cantidad=cant, fecha=fecha, motivo=motivo, factura=fac,
-                       observaciones=obs, producto=prods[p], usuario=us[u],
-                       proveedor=provs[t] if tipo == "E" else None,
-                       cliente=clis[t] if tipo == "S" else None).registrar()
+            Movimiento(
+                tipo=tipo,
+                cantidad=cant,
+                fecha=fecha,
+                motivo=motivo,
+                factura=fac,
+                observaciones=obs,
+                producto=prods[p],
+                usuario=us[u],
+                proveedor=provs[t] if tipo == "E" else None,
+                cliente=clis[t] if tipo == "S" else None,
+            ).registrar()
         hoy = timezone.localdate()
         for tipo, cant, atras, motivo, fac, obs, p, u, t in RECIENTES:
-            Movimiento(tipo=tipo, cantidad=cant, fecha=hoy - timedelta(days=atras), motivo=motivo,
-                       factura=fac, observaciones=obs, producto=prods[p], usuario=us[u],
-                       proveedor=provs[t] if tipo == "E" else None,
-                       cliente=clis[t] if tipo == "S" else None).registrar()
+            Movimiento(
+                tipo=tipo,
+                cantidad=cant,
+                fecha=hoy - timedelta(days=atras),
+                motivo=motivo,
+                factura=fac,
+                observaciones=obs,
+                producto=prods[p],
+                usuario=us[u],
+                proveedor=provs[t] if tipo == "E" else None,
+                cliente=clis[t] if tipo == "S" else None,
+            ).registrar()
         Reporte.objects.create(tipo="Stock actual", usuario=us[0])
-        self.stdout.write(self.style.SUCCESS(
-            "Datos de ejemplo cargados. Entra con admin@magnussig.com / admin2026"))
+        self.stdout.write(
+            self.style.SUCCESS(
+                "Datos de ejemplo cargados. Entra con admin@magnussig.com / admin2026"
+            )
+        )

@@ -142,14 +142,12 @@
         </div>
         <div class="fld">
         <label>
-        Número de factura *
+        Número de factura
         </label>
-        {{ form.factura }}
-        {% for e in form.factura.errors %}
-          <small class="err">
-          {{ e }}
-          </small>
-        {% endfor %}
+        <input class="input" type="text" value="{{ factura_sugerida }}" readonly disabled>
+        <small class="muted">
+        Se genera automáticamente al registrar.
+        </small>
         </div>
         </div>
         <div class="fld">

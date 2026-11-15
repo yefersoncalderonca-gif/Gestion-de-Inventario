@@ -1,0 +1,5 @@
+[flake8]
+max-line-length = 100
+exclude = migrations,venv,__pycache__
+per-file-ignores =
+    usuarios/templatetags/inv.py: E501

@@ -70,3 +70,15 @@
     });
   }
 })();
+
+/* Campos que solo admiten números (data-solo="digitos") o un NIT con guion
+   (data-solo="nit"): se descartan los demás caracteres mientras se escribe. */
+document.addEventListener('input', function (evento) {
+  var campo = evento.target;
+  var modo = campo.dataset ? campo.dataset.solo : null;
+  if (!modo) { return; }
+  var prohibidos = modo === 'nit' ? /[^0-9-]/g : /[^0-9]/g;
+  var limpio = campo.value.replace(prohibidos, '');
+  if (limpio !== campo.value) { campo.value = limpio; }
+});
+
